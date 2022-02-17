@@ -7,4 +7,27 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    // Dugsiile colors
+    <color name="background_gray">#E8E8E8</color>
+    <color name="primary_700">#017969</color>
+    <color name="primary_800">#01695b</color>
+    <color name="primary_900">#004d3f</color>
+    <color name="primary_600">#028979</color>
+    <color name="primary_500">#029687</color>
+    <color name="primary_400">#27a699</color>
+    <color name="primary_300">#4db6ac</color>
+    <color name="primary_200">#80cbc4</color>
+    <color name="primary_100">#b2dfdb</color>
+
+    <color name="secondary_400">#38cbed</color>
+    <color name="secondary_500">#33bfdc</color>
+    <color name="secondary_600">#2eaec8</color>
+    <color name="secondary_700">#289aae</color>
+    <color name="secondary_800">#248695</color>
+    <color name="secondary_900">#1b6369</color>
+    <color name="secondary_300">#55d3e9</color>
+    <color name="secondary_200">#84e0f1</color>
+    <color name="secondary_100">#b5ecf6</color>
+
 </resources>
