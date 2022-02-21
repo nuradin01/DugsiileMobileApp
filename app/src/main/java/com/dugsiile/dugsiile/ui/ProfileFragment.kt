@@ -1,10 +1,11 @@
-package com.dugsiile.dugsiile
+package com.dugsiile.dugsiile.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dugsiile.dugsiile.R
 
 class ProfileFragment : Fragment() {
 

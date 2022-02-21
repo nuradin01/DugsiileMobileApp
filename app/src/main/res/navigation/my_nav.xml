@@ -7,32 +7,32 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.dugsiile.dugsiile.LoginFragment"
+        android:name="com.dugsiile.dugsiile.ui.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.dugsiile.dugsiile.SignupFragment"
+        android:name="com.dugsiile.dugsiile.ui.SignupFragment"
         android:label="fragment_signup"
         tools:layout="@layout/fragment_signup" />
     <fragment
         android:id="@+id/feesFragment"
-        android:name="com.dugsiile.dugsiile.FeesFragment"
+        android:name="com.dugsiile.dugsiile.ui.FeesFragment"
         android:label="fragment_fees"
         tools:layout="@layout/fragment_fees" />
     <fragment
         android:id="@+id/studentFragment"
-        android:name="com.dugsiile.dugsiile.StudentFragment"
+        android:name="com.dugsiile.dugsiile.ui.StudentFragment"
         android:label="fragment_student"
         tools:layout="@layout/fragment_student" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.dugsiile.dugsiile.HomeFragment"
+        android:name="com.dugsiile.dugsiile.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.dugsiile.dugsiile.ProfileFragment"
+        android:name="com.dugsiile.dugsiile.ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
