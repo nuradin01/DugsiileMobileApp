@@ -1,20 +1,30 @@
 package com.dugsiile.dugsiile.ui
 
-import android.content.Context
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.models.EmailAndPassword
+import com.dugsiile.dugsiile.util.NetworkResult
+import com.dugsiile.dugsiile.util.observeOnce
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +37,7 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,24 +46,16 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+
+        binding.etPassword.doOnTextChanged { text, _, _, _ ->
+            if (text != null) {
+                binding.btnSignin.isEnabled = text.length >= 6
+            }
+        }
+
         binding.btnSignin.setOnClickListener{
-            var email = binding.etEmail.text.toString()
-            var password = binding.etPassword.text.toString()
-            var myEmailAndPassword = EmailAndPassword(email, password)
+            validateInputs()
 
-            if(email.isNullOrEmpty() ){
-
-                Log.d("Test", "email is empty")
-            }
-            else if (password.isNullOrEmpty()){
-                Log.d("Test", "password is empty")
-            }
-            else {
-                mainViewModel.login(myEmailAndPassword)
-                mainViewModel.loginResponse.observe(viewLifecycleOwner) {
-                    Log.d("guul", it.data.toString())
-                }
-            }
 
         }
 
@@ -62,7 +65,63 @@ class LoginFragment : Fragment() {
 
         return binding.root
     }
-// Hiding the top app bar
+
+    private fun validateInputs() {
+        val email = binding.etEmail.text?.trim().toString()
+        val password = binding.etPassword.text.toString()
+        val myEmailAndPassword = EmailAndPassword(email, password)
+
+        when {
+            myEmailAndPassword.email.isEmpty() -> {
+                binding.emailInputLayout.error = "Please enter your email"
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(myEmailAndPassword.email).matches() -> {
+                binding.emailInputLayout.error = "Please enter correct email"
+            }
+            myEmailAndPassword.password.isEmpty() -> {
+                binding.passwordInputLayout.error = "Please enter your password"
+            }
+            else -> {
+                binding.emailInputLayout.error = null
+                binding.passwordInputLayout.error = null
+
+                mainViewModel.login(myEmailAndPassword)
+                handleLoginResponse()
+            }
+        }
+    }
+
+    private fun handleLoginResponse() {
+        mainViewModel.loginResponse.observe(viewLifecycleOwner) {response ->
+//            val dialog = Dialog(requireContext())
+//            dialog.setContentView(R.layout.custom_loader)
+//            dialog.create()
+
+
+            when(response){
+                is NetworkResult.Error -> {
+//                    dialog.dismiss()
+                    Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
+
+                }
+                is NetworkResult.Loading -> {
+//                    dialog.show()
+                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+                    Log.d("Loading...", "loading")
+
+                }
+                is NetworkResult.Success -> {
+//                    dialog.dismiss()
+                    val action =
+                        LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                    findNavController().navigate(action)
+                }
+            }
+
+        }
+    }
+
+    // Hiding the top app bar
     override fun onResume() {
         super.onResume()
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
@@ -73,6 +132,9 @@ class LoginFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 }

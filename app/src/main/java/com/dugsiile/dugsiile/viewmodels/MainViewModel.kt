@@ -39,11 +39,10 @@ class MainViewModel @Inject constructor(
                 val response = repository.remote.login(emailAndPassword)
                 loginResponse.value = handleLoginResponse(response)
 
-                Log.d("TokenResponse", loginResponse.value.toString())
-                Log.d("TokenResponse", "${emailAndPassword.email} and ${emailAndPassword.password}" )
+                Log.d("guul", loginResponse.value?.message.toString())
 
             } catch (e: Exception) {
-                loginResponse.value = NetworkResult.Error("Recipes not found.")
+                loginResponse.value = NetworkResult.Error("Something went wrong.")
                 Log.d("error", e.toString())
             }
         } else {
@@ -53,6 +52,9 @@ class MainViewModel @Inject constructor(
     }
     private fun handleLoginResponse(response: Response<Token>): NetworkResult<Token> {
         return when {
+            response.code() == 401 ->{
+                    NetworkResult.Error("Invalid credentials")
+            }
             response.isSuccessful -> {
                 NetworkResult.Success(response.body()!!)
             }
