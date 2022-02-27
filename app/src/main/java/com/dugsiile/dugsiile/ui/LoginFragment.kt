@@ -1,6 +1,6 @@
 package com.dugsiile.dugsiile.ui
 
-import android.app.AlertDialog
+
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+   private var dialog : Dialog? = null
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -55,13 +56,12 @@ class LoginFragment : Fragment() {
 
         binding.btnSignin.setOnClickListener{
             validateInputs()
-
-
         }
-
-
-
-
+        binding.tvSignup.setOnClickListener {
+            val action =
+                LoginFragmentDirections.actionLoginFragmentToSignupFragment()
+            findNavController().navigate(action)
+        }
 
         return binding.root
     }
@@ -93,25 +93,23 @@ class LoginFragment : Fragment() {
 
     private fun handleLoginResponse() {
         mainViewModel.loginResponse.observe(viewLifecycleOwner) {response ->
-//            val dialog = Dialog(requireContext())
+//            dialog = Dialog(requireContext())
 //            dialog.setContentView(R.layout.custom_loader)
 //            dialog.create()
 
-
             when(response){
                 is NetworkResult.Error -> {
-//                    dialog.dismiss()
+                   cancelProgressDialog()
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
 
                 }
                 is NetworkResult.Loading -> {
-//                    dialog.show()
-                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
-                    Log.d("Loading...", "loading")
-
+                    showProgressDialog()
                 }
                 is NetworkResult.Success -> {
-//                    dialog.dismiss()
+                    mainViewModel.saveToken(response.data?.token!!)
+                    resetForm()
+                    cancelProgressDialog()
                     val action =
                         LoginFragmentDirections.actionLoginFragmentToHomeFragment()
                     findNavController().navigate(action)
@@ -120,6 +118,36 @@ class LoginFragment : Fragment() {
 
         }
     }
+
+    private fun resetForm() {
+       binding.etPassword.text= null
+        binding.etEmail.text = null
+    }
+
+    /**
+     * Method is used to show the Custom Progress Dialog.
+     */
+    private fun showProgressDialog() {
+        dialog = Dialog(requireContext())
+
+        /*Set the screen content from a layout resource.
+        The resource will be inflated, adding all top-level views to the screen.*/
+        dialog?.setContentView(R.layout.custom_loader)
+
+        //Start the dialog and display it on screen.
+        dialog?.show()
+    }
+
+    /**
+     * This function is used to dismiss the progress dialog if it is visible to user.
+     */
+    private fun cancelProgressDialog() {
+        if (dialog != null) {
+            dialog?.dismiss()
+            dialog = null
+        }
+    }
+
 
     // Hiding the top app bar
     override fun onResume() {

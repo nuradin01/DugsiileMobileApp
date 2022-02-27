@@ -17,34 +17,34 @@
             android:id="@+id/tvLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/sansitaswashed_medium"
             android:text="@string/dugsiile"
-            android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="45sp"
-            android:fontFamily="@font/sansitaswashed_medium"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/cardView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.836" />
+            app:layout_constraintVertical_bias="0.545" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="75dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:cardCornerRadius="8dp"
+            app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.493">
+            app:layout_constraintVertical_bias="0.37">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     android:textSize="36sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.65"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,11 +94,11 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="true"
                     app:endIconMode="password_toggle"
+                    app:errorEnabled="true"
+                    app:layout_constraintBottom_toTopOf="@id/btnSignin"
                     app:layout_constraintEnd_toEndOf="@+id/emailInputLayout"
                     app:layout_constraintStart_toStartOf="@+id/emailInputLayout"
-                    app:layout_constraintBottom_toTopOf="@id/btnSignin"
                     app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
                     app:startIconDrawable="@drawable/ic_lock"
                     tools:layout_editor_absoluteY="154dp">
@@ -116,15 +116,46 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginBottom="12dp"
                     android:enabled="false"
                     android:text="@string/sign_in"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/linearLayout"
                     app:layout_constraintEnd_toEndOf="@+id/passwordInputLayout"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="@+id/passwordInputLayout"
                     app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
                     app:layout_constraintVertical_bias="1.0" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSignin"
+                    app:layout_constraintVertical_bias="0.636"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/don_t_have_an_account"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvSignup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sign_up"
+                        android:textColor="@color/primary_700"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="2dp"/>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

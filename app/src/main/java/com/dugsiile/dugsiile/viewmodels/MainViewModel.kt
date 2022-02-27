@@ -10,11 +10,13 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.dugsiile.dugsiile.data.DataStoreRepository
 import com.dugsiile.dugsiile.data.Repository
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.lang.Exception
@@ -23,8 +25,17 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: Repository,
-    application: Application
+    application: Application,
+    private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
+
+    val readToken = dataStoreRepository.readToken
+
+    fun saveToken(token: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveToken(token)
+        }
+
     /** RETROFIT */
     var loginResponse: MutableLiveData<NetworkResult<Token>> = MutableLiveData()
 
