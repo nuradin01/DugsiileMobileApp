@@ -3,13 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/drawable/ic_uploud_profile.xml" value="0.104" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/custom_loader.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_fees.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_home.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_login.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_profile.xml" value="0.13177083333333334" />
-        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_signup.xml" value="0.13177083333333334" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_signup.xml" value="0.2918781725888325" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_student.xml" value="0.13177083333333334" />
       </map>
     </option>
