@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.databinding.FragmentSignupBinding
@@ -103,7 +104,11 @@ class SignupFragment : Fragment() {
             // The uri of selection image from phone storage.
             mSelectedImageFileUri = data.data!!
 
-           binding.ivSignupPicture.setImageURI(mSelectedImageFileUri)
+           binding.ivSignupPicture.load(mSelectedImageFileUri) {
+               crossfade(true)
+           }
+            binding.ivSignupPicture.setStrokeColorResource(R.color.primary_700)
+            binding.ivSignupPicture.setStrokeWidthResource(R.dimen.imageviewStroke)
         }
     }
     // Hiding the top app bar
