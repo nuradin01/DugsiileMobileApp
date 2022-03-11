@@ -1,32 +1,55 @@
 package com.dugsiile.dugsiile.ui
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import coil.load
-import com.dugsiile.dugsiile.R
-import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.databinding.FragmentSignupBinding
-import java.io.IOException
+import com.yalantis.ucrop.UCrop
+import java.io.File
 
 class SignupFragment : Fragment() {
-    // Add a global variable for URI of a selected image from phone storage.
-    private var mSelectedImageFileUri: Uri? = null
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
+
+    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>(){
+        override fun createIntent(context: Context, input: List<Uri>): Intent {
+            val inputUri = input[0]
+            val outputUri = input[1]
+
+            val uCrop = UCrop.of(inputUri, outputUri)
+                .withAspectRatio(5f,5f)
+
+            return uCrop.getIntent(context)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri {
+           return UCrop.getOutput(intent!!)!!
+        }
+    }
+
+    private val getImageFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()){uri ->
+        val outputUri = File(context?.filesDir, "croppedImage.jpg").toUri()
+        val listUri = listOf<Uri>(uri, outputUri)
+        cropImage.launch(listUri)
+    }
+
+    private val cropImage = registerForActivityResult(uCropContract){uri ->
+        binding.ivSignupPicture.load(uri){
+            crossfade(true)
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,82 +58,15 @@ class SignupFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentSignupBinding.inflate(inflater, container, false)
 
-
+//
         binding.ivSignupPicture.setOnClickListener {
-
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                showImageChooser()
-            } else {
-                /*Requests permissions to be granted to this application. These permissions
-                 must be requested in your manifest, they should not be granted to your app,
-                 and they should have protection level*/
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    READ_STORAGE_PERMISSION_CODE
-                )
-            }
+        getImageFromGallery.launch("image/*")
         }
+
 
         return binding.root
     }
 
-   /**
-    * This function will identify the result of runtime permission after the user allows or deny permission based on the unique code.
-    *
-    * @param requestCode
-    * @param permissions
-    * @param grantResults
-    */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == READ_STORAGE_PERMISSION_CODE) {
-            //If permission is granted
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showImageChooser()
-            } else {
-                //Displaying another toast if permission is not granted
-                Toast.makeText(
-                    requireContext(),
-                    "Oops, you just denied the permission for storage. You can also allow it from settings.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
-
-    private fun showImageChooser() {
-        // An intent for launching the image selection of phone storage.
-        val galleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        // Launches the image selection of phone storage using the constant code.
-        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK
-            && requestCode == PICK_IMAGE_REQUEST_CODE
-            && data!!.data != null
-        ) {
-            // The uri of selection image from phone storage.
-            mSelectedImageFileUri = data.data!!
-
-           binding.ivSignupPicture.load(mSelectedImageFileUri) {
-               crossfade(true)
-           }
-            binding.ivSignupPicture.setStrokeColorResource(R.color.primary_700)
-            binding.ivSignupPicture.setStrokeWidthResource(R.dimen.imageviewStroke)
-        }
-    }
     // Hiding the top app bar
     override fun onResume() {
         super.onResume()
