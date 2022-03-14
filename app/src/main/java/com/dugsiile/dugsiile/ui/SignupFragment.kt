@@ -1,5 +1,6 @@
 package com.dugsiile.dugsiile.ui
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,18 +10,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
 import coil.load
+import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentSignupBinding
+import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
+import com.dugsiile.dugsiile.util.NetworkResult
+import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.yalantis.ucrop.UCrop
+import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import kotlin.reflect.typeOf
 
+@AndroidEntryPoint
 class SignupFragment : Fragment() {
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var mainViewModel: MainViewModel
 
     private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>(){
         override fun createIntent(context: Context, input: List<Uri>): Intent {
@@ -45,12 +62,19 @@ class SignupFragment : Fragment() {
     }
 
     private val cropImage = registerForActivityResult(uCropContract){uri ->
-        binding.ivSignupPicture.load(uri){
-            crossfade(true)
+//        binding.ivSignupPicture.load(uri){
+//            crossfade(true)
+//        }
+        if (uri != null) {
+            uploadImage(uri)
         }
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +90,41 @@ class SignupFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun uploadImage(uri:Uri){
+
+        val file  = File(uri.path!!)
+        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val image = MultipartBody.Part.createFormData("image", file.name, requestBody)
+
+        mainViewModel.uploadImage(image)
+
+        mainViewModel.uploadImageResponse.observe(viewLifecycleOwner) { response ->
+
+
+            when(response){
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
+                    Log.d("uploadImage err", response.message.toString())
+                }
+                is NetworkResult.Loading -> {
+                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+
+                }
+                is NetworkResult.Success -> {
+                    Toast.makeText(context, response.data.toString(), Toast.LENGTH_SHORT).show()
+                    Log.d("uploadImage", response.data?.image.toString())
+                    binding.ivSignupPicture.load(BASE_URL+"/"+response.data!!.image) {
+                        crossfade(true)
+                        error(R.drawable.ic_uploud_profile)
+                    }
+
+                }
+            }
+
+        }
+    }
+
 
     // Hiding the top app bar
     override fun onResume() {
@@ -83,13 +142,4 @@ class SignupFragment : Fragment() {
         _binding = null
     }
 
-    /**
-     * A companion object to declare the constants.
-     */
-    companion object {
-        //A unique code for asking the Read Storage Permission using this we will be check and identify in the method onRequestPermissionsResult
-        private const val READ_STORAGE_PERMISSION_CODE = 1
-
-        private const val PICK_IMAGE_REQUEST_CODE = 2
-    }
 }
