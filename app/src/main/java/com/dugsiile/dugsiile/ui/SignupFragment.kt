@@ -1,20 +1,21 @@
 package com.dugsiile.dugsiile.ui
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.dugsiile.dugsiile.R
@@ -28,9 +29,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import kotlin.reflect.typeOf
+
 
 @AndroidEntryPoint
 class SignupFragment : Fragment() {
@@ -81,11 +80,20 @@ class SignupFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentSignupBinding.inflate(inflater, container, false)
-
-//
         binding.ivSignupPicture.setOnClickListener {
         getImageFromGallery.launch("image/*")
         }
+
+        val gender = resources.getStringArray(R.array.Gender)
+        val arrayAdepter = ArrayAdapter(requireContext(),R.layout.gender, gender)
+        binding.genderInputSignup.setAdapter(arrayAdepter)
+
+        binding.genderInputSignup.onItemClickListener =
+            OnItemClickListener { _, _, position, _ ->
+            Toast.makeText(requireContext(),gender[position],Toast.LENGTH_SHORT).show()
+            }
+
+
 
 
         return binding.root
@@ -116,7 +124,7 @@ class SignupFragment : Fragment() {
                     Log.d("uploadImage", response.data?.image.toString())
                     binding.ivSignupPicture.load(BASE_URL+"/"+response.data!!.image) {
                         crossfade(true)
-                        error(R.drawable.ic_uploud_profile)
+                        error(R.drawable.ic_upload_profile)
                     }
 
                 }

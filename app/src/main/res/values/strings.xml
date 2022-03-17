@@ -11,4 +11,14 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign up</string>
     <string name="profile_image_icon">profile image icon</string>
+    <string name="name">Name</string>
+    <string name="gender">Gender</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="Required">*Required</string>
+    <string name="next">Next</string>
+    <string name="school_name">School name</string>
+    <string-array name="Gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>
