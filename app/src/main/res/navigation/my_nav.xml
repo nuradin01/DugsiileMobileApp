@@ -50,9 +50,4 @@
         android:name="com.dugsiile.dugsiile.ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/schoolRegisterFragment"
-        android:name="com.dugsiile.dugsiile.ui.SchoolRegisterFragment"
-        android:label="fragment_school_register"
-        tools:layout="@layout/fragment_school_register" />
 </navigation>
