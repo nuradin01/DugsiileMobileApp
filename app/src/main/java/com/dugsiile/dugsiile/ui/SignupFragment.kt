@@ -38,32 +38,30 @@ class SignupFragment : Fragment() {
 
     private lateinit var mainViewModel: MainViewModel
 
-    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>(){
+    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>() {
         override fun createIntent(context: Context, input: List<Uri>): Intent {
             val inputUri = input[0]
             val outputUri = input[1]
 
             val uCrop = UCrop.of(inputUri, outputUri)
-                .withAspectRatio(5f,5f)
+                .withAspectRatio(5f, 5f)
 
             return uCrop.getIntent(context)
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-           return UCrop.getOutput(intent!!)!!
+            return UCrop.getOutput(intent!!)!!
         }
     }
 
-    private val getImageFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()){uri ->
-        val outputUri = File(context?.filesDir, "croppedImage.jpg").toUri()
-        val listUri = listOf<Uri>(uri, outputUri)
-        cropImage.launch(listUri)
-    }
+    private val getImageFromGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            val outputUri = File(context?.filesDir, "croppedImage.jpg").toUri()
+            val listUri = listOf<Uri>(uri, outputUri)
+            cropImage.launch(listUri)
+        }
 
-    private val cropImage = registerForActivityResult(uCropContract){uri ->
-//        binding.ivSignupPicture.load(uri){
-//            crossfade(true)
-//        }
+    private val cropImage = registerForActivityResult(uCropContract) { uri ->
         if (uri != null) {
             uploadImage(uri)
         }
@@ -74,6 +72,7 @@ class SignupFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,27 +80,24 @@ class SignupFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentSignupBinding.inflate(inflater, container, false)
         binding.ivSignupPicture.setOnClickListener {
-        getImageFromGallery.launch("image/*")
+            getImageFromGallery.launch("image/*")
         }
 
         val gender = resources.getStringArray(R.array.Gender)
-        val arrayAdepter = ArrayAdapter(requireContext(),R.layout.gender, gender)
+        val arrayAdepter = ArrayAdapter(requireContext(), R.layout.gender, gender)
         binding.genderInputSignup.setAdapter(arrayAdepter)
 
         binding.genderInputSignup.onItemClickListener =
             OnItemClickListener { _, _, position, _ ->
-            Toast.makeText(requireContext(),gender[position],Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), gender[position], Toast.LENGTH_SHORT).show()
             }
-
-
-
 
         return binding.root
     }
 
-    private fun uploadImage(uri:Uri){
+    private fun uploadImage(uri: Uri) {
 
-        val file  = File(uri.path!!)
+        val file = File(uri.path!!)
         val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val image = MultipartBody.Part.createFormData("image", file.name, requestBody)
 
@@ -110,7 +106,7 @@ class SignupFragment : Fragment() {
         mainViewModel.uploadImageResponse.observe(viewLifecycleOwner) { response ->
 
 
-            when(response){
+            when (response) {
                 is NetworkResult.Error -> {
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
                     Log.d("uploadImage err", response.message.toString())
@@ -122,7 +118,7 @@ class SignupFragment : Fragment() {
                 is NetworkResult.Success -> {
                     Toast.makeText(context, response.data.toString(), Toast.LENGTH_SHORT).show()
                     Log.d("uploadImage", response.data?.image.toString())
-                    binding.ivSignupPicture.load(BASE_URL+"/"+response.data!!.image) {
+                    binding.ivSignupPicture.load(BASE_URL + "/" + response.data!!.image) {
                         crossfade(true)
                         error(R.drawable.ic_upload_profile)
                     }

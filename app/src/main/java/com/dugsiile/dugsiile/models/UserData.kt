@@ -18,11 +18,11 @@ data class UserData(
     @SerializedName("name")
     val name: String,
     @SerializedName("photo")
-    val photo: String,
+    val photo: String?,
     @SerializedName("role")
-    val role: String,
+    val role: String?,
     @SerializedName("school")
     val school: String,
     @SerializedName("schoolSubjects")
-    val schoolSubjects: List<Any>
+    val schoolSubjects: List<String>
 )
