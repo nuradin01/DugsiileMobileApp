@@ -13,6 +13,7 @@ import com.dugsiile.dugsiile.data.Repository
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.models.UploadImageResponse
+import com.dugsiile.dugsiile.models.UserData
 import com.dugsiile.dugsiile.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +39,7 @@ class MainViewModel @Inject constructor(
 
     /** RETROFIT */
     var loginResponse: MutableLiveData<NetworkResult<Token>> = MutableLiveData()
+    var signUpResponse: MutableLiveData<NetworkResult<Token>> = MutableLiveData()
     var uploadImageResponse: MutableLiveData<NetworkResult<UploadImageResponse>> = MutableLiveData()
 
     fun login(emailAndPassword: EmailAndPassword) = viewModelScope.launch {
@@ -45,6 +47,28 @@ class MainViewModel @Inject constructor(
     }
     fun uploadImage(image: MultipartBody.Part) = viewModelScope.launch {
         uploadImageSafeCall(image)
+    }
+    fun signUp(userData: UserData)= viewModelScope.launch{
+        signUpSafeCall(userData)
+    }
+
+    private suspend fun signUpSafeCall(userData: UserData) {
+        signUpResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.signUp(userData)
+                signUpResponse.value = handleSignUpResponse(response)
+                Log.d("sign Up data", userData.toString())
+
+                Log.d("signUp Response", signUpResponse.value?.data?.token.toString())
+
+            } catch (e: Exception) {
+                signUpResponse.value = NetworkResult.Error("Something went wrong.")
+                Log.d("SignUp error", e.toString())
+            }
+        } else {
+            signUpResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
     }
 
     private suspend fun loginSafeCall(emailAndPassword: EmailAndPassword) {
@@ -70,6 +94,20 @@ class MainViewModel @Inject constructor(
             response.code() == 401 ->{
                     NetworkResult.Error("Invalid credentials")
             }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handleSignUpResponse(response: Response<Token>): NetworkResult<Token> {
+        return when {
+//            response.code()== 400 ->{
+//                NetworkResult.Error("Invalid credentials")
+//            }
             response.isSuccessful -> {
                 NetworkResult.Success(response.body()!!)
             }

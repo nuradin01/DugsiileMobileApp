@@ -20,12 +20,15 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
 
-    private var token : String? = null
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
     }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,11 +48,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkIfIsAuthenticated(token: String?) {
-if (token == null){
-    val action =
-        HomeFragmentDirections.actionHomeFragmentToLoginFragment()
-    findNavController().navigate(action)
-}
+        if (token == null) {
+            val action =
+                HomeFragmentDirections.actionHomeFragmentToLoginFragment()
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {

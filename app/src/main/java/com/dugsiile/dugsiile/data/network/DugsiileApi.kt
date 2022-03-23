@@ -3,6 +3,7 @@ package com.dugsiile.dugsiile.data.network
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.models.UploadImageResponse
+import com.dugsiile.dugsiile.models.UserData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -19,6 +20,11 @@ interface DugsiileApi {
     @POST("api/v1/auth/login")
     suspend fun login(
         @Body emailAndPassword: EmailAndPassword
+    ) : Response<Token>
+
+    @POST("api/v1/auth/register")
+    suspend fun signUp(
+        @Body userData: UserData
     ) : Response<Token>
 
     @Multipart

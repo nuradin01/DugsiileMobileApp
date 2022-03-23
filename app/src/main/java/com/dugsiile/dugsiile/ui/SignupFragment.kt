@@ -1,10 +1,12 @@
 package com.dugsiile.dugsiile.ui
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,24 +19,33 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentSignupBinding
+import com.dugsiile.dugsiile.models.UserData
 import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.util.*
 
 
 @AndroidEntryPoint
 class SignupFragment : Fragment() {
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var gender: String
+    private  var photo: String = "no-photo.jpg"
+    private var dialog : Dialog? = null
+
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -83,18 +94,23 @@ class SignupFragment : Fragment() {
             getImageFromGallery.launch("image/*")
         }
 
-        val gender = resources.getStringArray(R.array.Gender)
-        val arrayAdepter = ArrayAdapter(requireContext(), R.layout.gender, gender)
+        val genderArray = resources.getStringArray(R.array.Gender)
+        val arrayAdepter = ArrayAdapter(requireContext(), R.layout.gender, genderArray)
         binding.genderInputSignup.setAdapter(arrayAdepter)
 
         binding.genderInputSignup.onItemClickListener =
             OnItemClickListener { _, _, position, _ ->
-                Toast.makeText(requireContext(), gender[position], Toast.LENGTH_SHORT).show()
+               gender = genderArray[position]
             }
+
+
+        binding.signupbtn.setOnClickListener{
+            validateInputs()
+        }
+
 
         return binding.root
     }
-
     private fun uploadImage(uri: Uri) {
 
         val file = File(uri.path!!)
@@ -116,7 +132,7 @@ class SignupFragment : Fragment() {
 
                 }
                 is NetworkResult.Success -> {
-                    Toast.makeText(context, response.data.toString(), Toast.LENGTH_SHORT).show()
+                    photo = response.data?.image.toString()
                     Log.d("uploadImage", response.data?.image.toString())
                     binding.ivSignupPicture.load(BASE_URL + "/" + response.data!!.image) {
                         crossfade(true)
@@ -126,6 +142,118 @@ class SignupFragment : Fragment() {
                 }
             }
 
+        }
+    }
+
+
+    private fun validateInputs() {
+        val name = binding.nameInputSignup.text.toString()
+        val email = binding.emailInputSignup.text.toString().lowercase(Locale.getDefault())
+        val password = binding.passwordInputSignup.text.toString()
+        val confirmPassword = binding.confirmPasswordInputSignup.text.toString()
+        val schoolName = binding.schoolInputSignup.text.toString()
+
+        val subjectOne = binding.subjectOneInputSignup.text.toString()
+        val subjectTwo = binding.subjectTwoInputSignup.text.toString()
+        val subjectThree = binding.subjectThreeInputSignup.text.toString()
+        val subjectFour = binding.subjectFourInputSignup.text.toString()
+        val subjectFive = binding.subjectFiveInputSignup.text.toString()
+        val subjectSix = binding.subjectSixInputSignup.text.toString()
+        val subjectSeven = binding.subjectSevenInputSignup.text.toString()
+
+        val subjectsArrayFromInput = listOf<String>(subjectOne,subjectTwo,subjectThree,subjectFour,subjectFive,subjectSix,subjectSeven)
+        val schoolSubjectsArray = subjectsArrayFromInput.filter { it.isNotEmpty() }
+
+        val userData = UserData(
+            name = name,
+            email = email,
+            password = password,
+            gender = gender,
+            photo = photo,
+            role = null,
+            school = schoolName,
+            schoolSubjects = schoolSubjectsArray,
+            id = null,
+            isRegisteredSchool = null,
+            joinedAt = null
+        )
+
+        when {
+            userData.name.isEmpty() -> binding.nameInputLayoutSignup.error = "Name is required"
+            userData.email.isEmpty() -> binding.emailInputLayoutSignup.error = "Email is required"
+            !Patterns.EMAIL_ADDRESS.matcher(userData.email).matches() -> binding.emailInputLayoutSignup.error = "Please enter correct email"
+
+            userData.gender.isEmpty() -> binding.genderInputLayoutSignup.error = "Gender is required"
+            userData.password!!.isEmpty() -> binding.passwordInputLayoutSignup.error = "Password is required"
+            userData.school.isEmpty() -> binding.schoolInputLayoutSignup.error = "School name is required"
+            subjectOne.isEmpty() -> binding.subjectOneInputLayoutSignup.error = "Subject name is required"
+            password != confirmPassword -> {
+                binding.confirmPasswordInputLayoutSignup.error = "Passwords must match"
+            }
+            password.length < 6 -> binding.passwordInputLayoutSignup.error = "Password must be 6 characters long"
+            else ->{
+                binding.nameInputLayoutSignup.error = null
+                binding.emailInputLayoutSignup.error = null
+                binding.passwordInputLayoutSignup.error = null
+                binding.genderInputLayoutSignup.error = null
+                binding.schoolInputLayoutSignup.error = null
+                binding.subjectOneInputLayoutSignup.error = null
+
+                mainViewModel.signUp(userData)
+                handleSignUpResponse()
+            }
+        }
+    }
+
+    private fun handleSignUpResponse() {
+        mainViewModel.signUpResponse.observe(viewLifecycleOwner) {response ->
+
+            when(response){
+                is NetworkResult.Error -> {
+                    cancelProgressDialog()
+                    Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
+
+                }
+                is NetworkResult.Loading -> {
+                    showProgressDialog()
+                }
+                is NetworkResult.Success -> {
+                    mainViewModel.saveToken(response.data?.token!!)
+                    Thread.sleep(200)
+                    cancelProgressDialog()
+                    val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
+                    findNavController().navigate(action)
+                }
+            }
+
+        }
+    }
+
+
+
+
+
+    /**
+     * Method is used to show the Custom Progress Dialog.
+     */
+    private fun showProgressDialog() {
+        dialog = Dialog(requireContext())
+
+        /*Set the screen content from a layout resource.
+        The resource will be inflated, adding all top-level views to the screen.*/
+        dialog?.setContentView(R.layout.custom_loader)
+
+        //Start the dialog and display it on screen.
+        dialog?.show()
+    }
+
+    /**
+     * This function is used to dismiss the progress dialog if it is visible to user.
+     */
+    private fun cancelProgressDialog() {
+        if (dialog != null) {
+            dialog?.dismiss()
+            dialog = null
         }
     }
 

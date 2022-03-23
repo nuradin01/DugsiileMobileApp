@@ -26,12 +26,13 @@ import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.util.observeOnce
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-   private var dialog : Dialog? = null
+    private var dialog : Dialog? = null
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -67,7 +68,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun validateInputs() {
-        val email = binding.etEmail.text?.trim().toString()
+        val email = binding.etEmail.text?.trim().toString().lowercase(Locale.getDefault())
         val password = binding.etPassword.text.toString()
         val myEmailAndPassword = EmailAndPassword(email, password)
 
@@ -93,9 +94,6 @@ class LoginFragment : Fragment() {
 
     private fun handleLoginResponse() {
         mainViewModel.loginResponse.observe(viewLifecycleOwner) {response ->
-//            dialog = Dialog(requireContext())
-//            dialog.setContentView(R.layout.custom_loader)
-//            dialog.create()
 
             when(response){
                 is NetworkResult.Error -> {

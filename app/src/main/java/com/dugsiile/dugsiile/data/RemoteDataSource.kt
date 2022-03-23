@@ -4,6 +4,7 @@ import com.dugsiile.dugsiile.data.network.DugsiileApi
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.models.UploadImageResponse
+import com.dugsiile.dugsiile.models.UserData
 import okhttp3.MultipartBody
 import retrofit2.Response
 import java.io.File
@@ -14,6 +15,9 @@ class RemoteDataSource  @Inject constructor(
 ){
     suspend fun login(emailAndPassword: EmailAndPassword): Response<Token> {
         return dugsiileApi.login(emailAndPassword)
+    }
+    suspend fun signUp(userData: UserData): Response<Token> {
+        return dugsiileApi.signUp(userData)
     }
 
     suspend fun uploadImage(image: MultipartBody.Part): Response<UploadImageResponse> {
