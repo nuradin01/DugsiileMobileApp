@@ -211,6 +211,9 @@ class SignupFragment : Fragment() {
             when(response){
                 is NetworkResult.Error -> {
                     cancelProgressDialog()
+                    if (response.message.toString().contains("The Email you entered is taken by an other account")){
+                        binding.emailInputLayoutSignup.error = "This Email is taken by an other account"
+                    }
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
 
                 }

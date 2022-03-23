@@ -105,9 +105,9 @@ class MainViewModel @Inject constructor(
 
     private fun handleSignUpResponse(response: Response<Token>): NetworkResult<Token> {
         return when {
-//            response.code()== 400 ->{
-//                NetworkResult.Error("Invalid credentials")
-//            }
+            response.code()== 405 ->{
+                NetworkResult.Error("The Email you entered is taken by an other account")
+            }
             response.isSuccessful -> {
                 NetworkResult.Success(response.body()!!)
             }
