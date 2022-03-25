@@ -17,6 +17,9 @@
     <string name="Required">*Required</string>
     <string name="next">Next</string>
     <string name="school_name">School name</string>
+    <string name="home">Home</string>
+    <string name="fees">Fees</string>
+    <string name="profile">Profile</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

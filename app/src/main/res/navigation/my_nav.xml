@@ -8,12 +8,12 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.dugsiile.dugsiile.ui.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loginFragment_to_signupFragment"
@@ -24,38 +24,38 @@
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.dugsiile.dugsiile.ui.SignupFragment"
-        android:label="fragment_signup"
+        android:label="Signup"
         tools:layout="@layout/fragment_signup" >
         <action
             android:id="@+id/action_signupFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/signupFragment"
+            app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/feesFragment"
         android:name="com.dugsiile.dugsiile.ui.FeesFragment"
-        android:label="fragment_fees"
+        android:label="Fees"
         tools:layout="@layout/fragment_fees" />
     <fragment
         android:id="@+id/studentFragment"
         android:name="com.dugsiile.dugsiile.ui.StudentFragment"
-        android:label="fragment_student"
+        android:label="Students"
         tools:layout="@layout/fragment_student" />
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.dugsiile.dugsiile.ui.HomeFragment"
-        android:label="fragment_home"
+        android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:popUpTo="@id/loginFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.dugsiile.dugsiile.ui.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

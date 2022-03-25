@@ -5,8 +5,9 @@
       <map>
         <entry key="..\:/programming/Dugsiile/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/drawable/ic_person.xml" value="0.119" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/drawable/ic_uploud_profile.xml" value="0.104" />
-        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/custom_loader.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_fees.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_home.xml" value="0.13177083333333334" />
@@ -15,6 +16,7 @@
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_signup.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_student.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/gender.xml" value="0.14356884057971014" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/menu/bottom_nav_menu.xml" value="0.17552083333333332" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.104" />
       </map>
     </option>
