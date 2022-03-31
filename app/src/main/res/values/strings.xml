@@ -20,6 +20,7 @@
     <string name="home">Home</string>
     <string name="fees">Fees</string>
     <string name="profile">Profile</string>
+    <string name="sign_out">Sign out</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

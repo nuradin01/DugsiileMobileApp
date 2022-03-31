@@ -3,7 +3,6 @@ package com.dugsiile.dugsiile.ui
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.util.NetworkResult
-import com.dugsiile.dugsiile.util.observeOnce
-import com.dugsiile.dugsiile.viewmodels.MainViewModel
+import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -34,11 +27,11 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
     private var dialog : Dialog? = null
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var authViewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
 
     }
     override fun onCreateView(
@@ -86,14 +79,14 @@ class LoginFragment : Fragment() {
                 binding.emailInputLayout.error = null
                 binding.passwordInputLayout.error = null
 
-                mainViewModel.login(myEmailAndPassword)
+                authViewModel.login(myEmailAndPassword)
                 handleLoginResponse()
             }
         }
     }
 
     private fun handleLoginResponse() {
-        mainViewModel.loginResponse.observe(viewLifecycleOwner) {response ->
+        authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
 
             when(response){
                 is NetworkResult.Error -> {
@@ -105,7 +98,7 @@ class LoginFragment : Fragment() {
                     showProgressDialog()
                 }
                 is NetworkResult.Success -> {
-                    mainViewModel.saveToken(response.data?.token!!)
+                    authViewModel.saveToken(response.data?.token!!)
                     resetForm()
                     cancelProgressDialog()
                     val action =

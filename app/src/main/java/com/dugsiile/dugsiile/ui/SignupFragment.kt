@@ -26,7 +26,7 @@ import com.dugsiile.dugsiile.databinding.FragmentSignupBinding
 import com.dugsiile.dugsiile.models.UserData
 import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
 import com.dugsiile.dugsiile.util.NetworkResult
-import com.dugsiile.dugsiile.viewmodels.MainViewModel
+import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType
@@ -41,12 +41,12 @@ class SignupFragment : Fragment() {
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var gender: String
+    private var gender: String = "Male"
     private  var photo: String = "no-photo.jpg"
     private var dialog : Dialog? = null
 
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var authViewModel: AuthViewModel
 
     private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>() {
         override fun createIntent(context: Context, input: List<Uri>): Intent {
@@ -80,7 +80,7 @@ class SignupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -116,9 +116,9 @@ class SignupFragment : Fragment() {
         val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val image = MultipartBody.Part.createFormData("image", file.name, requestBody)
 
-        mainViewModel.uploadImage(image)
+        authViewModel.uploadImage(image)
 
-        mainViewModel.uploadImageResponse.observe(viewLifecycleOwner) { response ->
+        authViewModel.uploadImageResponse.observe(viewLifecycleOwner) { response ->
 
 
             when (response) {
@@ -198,14 +198,14 @@ class SignupFragment : Fragment() {
                 binding.schoolInputLayoutSignup.error = null
                 binding.subjectOneInputLayoutSignup.error = null
 
-                mainViewModel.signUp(userData)
+                authViewModel.signUp(userData)
                 handleSignUpResponse()
             }
         }
     }
 
     private fun handleSignUpResponse() {
-        mainViewModel.signUpResponse.observe(viewLifecycleOwner) {response ->
+        authViewModel.signUpResponse.observe(viewLifecycleOwner) { response ->
 
             when(response){
                 is NetworkResult.Error -> {
@@ -220,7 +220,7 @@ class SignupFragment : Fragment() {
                     showProgressDialog()
                 }
                 is NetworkResult.Success -> {
-                    mainViewModel.saveToken(response.data?.token!!)
+                    authViewModel.saveToken(response.data?.token!!)
                     Thread.sleep(200)
                     cancelProgressDialog()
                     val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
