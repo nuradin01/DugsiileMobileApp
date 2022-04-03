@@ -1,17 +1,11 @@
 package com.dugsiile.dugsiile.data.network
 
-import com.dugsiile.dugsiile.models.EmailAndPassword
-import com.dugsiile.dugsiile.models.Token
-import com.dugsiile.dugsiile.models.UploadImageResponse
-import com.dugsiile.dugsiile.models.UserData
+import com.dugsiile.dugsiile.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 
 interface DugsiileApi {
@@ -27,9 +21,21 @@ interface DugsiileApi {
         @Body userData: UserData
     ) : Response<Token>
 
+
     @Multipart
     @POST("api/v1/upload")
    suspend fun uploadImage(
         @Part image: MultipartBody.Part
     ): Response<UploadImageResponse>
+
+    @GET("api/v1/auth/me")
+    suspend fun getLogedinUser(
+        @Header("authorization") token: String
+    ) : Response<User>
+
+    @POST("api/v1/students")
+    suspend fun addStudent(
+        @Body studentData: StudentData
+    ) : Response<Student>
+
 }

@@ -30,7 +30,6 @@ class AuthViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
 
-    val readToken = dataStoreRepository.readToken
 
     fun saveToken(token: String) =
         viewModelScope.launch(Dispatchers.IO) {

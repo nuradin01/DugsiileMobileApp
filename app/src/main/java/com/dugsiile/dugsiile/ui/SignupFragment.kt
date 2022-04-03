@@ -41,7 +41,7 @@ class SignupFragment : Fragment() {
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
 
-    private var gender: String = "Male"
+    private var gender: String = "Nothing"
     private  var photo: String = "no-photo.jpg"
     private var dialog : Dialog? = null
 
@@ -182,7 +182,7 @@ class SignupFragment : Fragment() {
             userData.email.isEmpty() -> binding.emailInputLayoutSignup.error = "Email is required"
             !Patterns.EMAIL_ADDRESS.matcher(userData.email).matches() -> binding.emailInputLayoutSignup.error = "Please enter correct email"
 
-            userData.gender.isEmpty() -> binding.genderInputLayoutSignup.error = "Gender is required"
+            userData.gender.contains("Nothing") -> binding.genderInputLayoutSignup.error = "Gender is required"
             userData.password!!.isEmpty() -> binding.passwordInputLayoutSignup.error = "Password is required"
             userData.school.isEmpty() -> binding.schoolInputLayoutSignup.error = "School name is required"
             subjectOne.isEmpty() -> binding.subjectOneInputLayoutSignup.error = "Subject name is required"

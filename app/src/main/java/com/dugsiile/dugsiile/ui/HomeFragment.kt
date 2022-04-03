@@ -8,7 +8,6 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentHomeBinding
-import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,14 +16,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var authViewModel: AuthViewModel
     private lateinit var mainViewModel: MainViewModel
 
     private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
     }
@@ -38,7 +35,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        authViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
+        mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
             token = value
             binding.tvToken.text = token
             checkIfIsAuthenticated(token)
@@ -55,9 +52,16 @@ class HomeFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.miSignout){
-            mainViewModel.signout()
-            Snackbar.make(binding.root, "Successfully signed out", Snackbar.LENGTH_SHORT).show()
+        when (item.itemId) {
+            R.id.miSignout -> {
+                mainViewModel.signout()
+                Snackbar.make(binding.root, "Successfully signed out", Snackbar.LENGTH_SHORT).show()
+            }
+            R.id.miAddStudent -> {
+                val action =
+                    HomeFragmentDirections.actionHomeFragmentToRegisterStudentFragment()
+                findNavController().navigate(action)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

@@ -6,19 +6,19 @@ import java.util.*
 
 data class StudentData(
     @SerializedName("fee")
-    val fee: Int,
+    val fee: Int?,
     @SerializedName("fees")
-    val fees: List<FeeData>,
+    val fees: List<FeeData>?,
     @SerializedName("gender")
     val gender: String,
-    @SerializedName("id")
-    val id: String,
+    @SerializedName("photo")
+    val photo: String?,
     @SerializedName("isLeft")
-    val isLeft: Boolean,
+    val isLeft: Boolean?,
     @SerializedName("isScholarship")
-    val isScholarship: Boolean,
+    val isScholarship: Boolean?,
     @SerializedName("joinedAt")
-    val joinedAt: Date,
+    val joinedAt: Date?,
     @SerializedName("leftAt")
     val leftAt: Date?,
     @SerializedName("name")
@@ -30,7 +30,7 @@ data class StudentData(
     @SerializedName("studentPhone")
     val studentPhone: String?,
     @SerializedName("studentSubjects")
-    val studentSubjects: List<String>,
+    val studentSubjects: List<String>?,
     @SerializedName("user")
-    val user: String
+    val user: String?
 )

@@ -21,6 +21,15 @@
     <string name="fees">Fees</string>
     <string name="profile">Profile</string>
     <string name="sign_out">Sign out</string>
+    <string name="choose_subjects">Choose Subjects</string>
+    <string name="enroll_student">Enroll Student</string>
+    <string name="parent_name">Parent Name</string>
+    <string name="parent_phone">Parent phone</string>
+    <string name="student_phone">Student phone</string>
+    <string name="fee">Fee</string>
+    <string name="scholarship">Scholarship</string>
+    <string name="enroll">Enroll</string>
+    <string name="student_name">Student name</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>
