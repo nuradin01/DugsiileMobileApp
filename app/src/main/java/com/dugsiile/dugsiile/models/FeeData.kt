@@ -6,11 +6,11 @@ import java.util.*
 
 data class FeeData(
     @SerializedName("amountCharged")
-    val amountCharged: Int,
+    val amountCharged: Float,
     @SerializedName("amountPaid")
-    val amountPaid: Int?,
+    val amountPaid: Float?,
     @SerializedName("balance")
-    val balance: Int?,
+    val balance: Float?,
     @SerializedName("chargedAt")
     val chargedAt: Date,
     @SerializedName("id")

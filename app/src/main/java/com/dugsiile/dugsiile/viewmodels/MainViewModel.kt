@@ -36,23 +36,24 @@ class MainViewModel @Inject constructor(
 
     /** RETROFIT */
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
-    var addStudentResponse: MutableLiveData<NetworkResult<Student>> = MutableLiveData()
+    var addStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
     }
 
-    fun addStudent(studentData: StudentData)= viewModelScope.launch{
-        addStudentSafeCall(studentData)
+    fun addStudent(token: String,studentData: StudentData)= viewModelScope.launch{
+        addStudentSafeCall(token,studentData)
     }
 
-    private suspend fun addStudentSafeCall(studentData: StudentData) {
+    private suspend fun addStudentSafeCall(token: String,studentData: StudentData) {
         addStudentResponse.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             try {
-                val response = repository.remote.addStudent(studentData)
+                val response = repository.remote.addStudent(token,studentData)
                 addStudentResponse.value = handleAddStudent(response)
                 Log.d("add student data", studentData.toString())
+                Log.d("add token", token)
 
                 Log.d("add student Response", addStudentResponse.value?.data.toString())
 
@@ -83,7 +84,7 @@ class MainViewModel @Inject constructor(
 
     }
 
-    private fun handleAddStudent(response: Response<Student>): NetworkResult<Student> {
+    private fun handleAddStudent(response: Response<StudentData>): NetworkResult<StudentData> {
         return when {
             response.code() == 401 ->{
                 NetworkResult.Error("Not Authorized to access this Resource.")
@@ -92,6 +93,7 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Success(response.body()!!)
             }
             else -> {
+                Log.d("SignUp error", response.message())
                 NetworkResult.Error(response.message())
             }
         }

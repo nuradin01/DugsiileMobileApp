@@ -25,7 +25,7 @@ class RemoteDataSource  @Inject constructor(
         return dugsiileApi.uploadImage(image)
     }
 
-    suspend fun addStudent(studentData: StudentData): Response<Student> {
-        return dugsiileApi.addStudent(studentData)
+    suspend fun addStudent(token: String,studentData: StudentData): Response<StudentData> {
+        return dugsiileApi.addStudent(token,studentData)
     }
 }

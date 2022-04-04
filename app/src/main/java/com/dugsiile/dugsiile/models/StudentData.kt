@@ -6,7 +6,7 @@ import java.util.*
 
 data class StudentData(
     @SerializedName("fee")
-    val fee: Int?,
+    val fee: Float?,
     @SerializedName("fees")
     val fees: List<FeeData>?,
     @SerializedName("gender")

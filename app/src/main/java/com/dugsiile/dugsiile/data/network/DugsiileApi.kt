@@ -35,7 +35,8 @@ interface DugsiileApi {
 
     @POST("api/v1/students")
     suspend fun addStudent(
+        @Header("authorization") token: String,
         @Body studentData: StudentData
-    ) : Response<Student>
+    ) : Response<StudentData>
 
 }
