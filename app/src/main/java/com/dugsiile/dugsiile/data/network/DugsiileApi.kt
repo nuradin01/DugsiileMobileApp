@@ -39,4 +39,9 @@ interface DugsiileApi {
         @Body studentData: StudentData
     ) : Response<StudentData>
 
+    @GET("api/v1/students")
+    suspend fun getStudents(
+        @Header("authorization") token: String,
+    ) : Response<Student>
+
 }

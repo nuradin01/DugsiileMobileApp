@@ -28,4 +28,7 @@ class RemoteDataSource  @Inject constructor(
     suspend fun addStudent(token: String,studentData: StudentData): Response<StudentData> {
         return dugsiileApi.addStudent(token,studentData)
     }
+    suspend fun getStudents(token: String): Response<Student> {
+        return dugsiileApi.getStudents(token)
+    }
 }

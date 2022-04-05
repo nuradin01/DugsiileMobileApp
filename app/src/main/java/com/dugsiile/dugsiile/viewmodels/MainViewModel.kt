@@ -37,9 +37,13 @@ class MainViewModel @Inject constructor(
     /** RETROFIT */
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     var addStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
+    var studentsResponse: MutableLiveData<NetworkResult<Student>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
+    }
+    fun getStudents(token: String) = viewModelScope.launch {
+        getStudentsSafeCall(token)
     }
 
     fun addStudent(token: String,studentData: StudentData)= viewModelScope.launch{
@@ -85,6 +89,24 @@ class MainViewModel @Inject constructor(
 
     }
 
+    private suspend fun getStudentsSafeCall(token: String) {
+        studentsResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.getStudents(token)
+                studentsResponse.value = handleStudentsResponse(response)
+                Log.d("Token", token)
+
+            } catch (e: Exception) {
+                studentsResponse.value = NetworkResult.Error(e.message)
+            }
+        } else {
+            studentsResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+
+
+    }
+
     private fun handleAddStudent(response: Response<StudentData>): NetworkResult<StudentData> {
         return when {
             response.code() == 401 ->{
@@ -101,6 +123,20 @@ class MainViewModel @Inject constructor(
     }
 
     private fun handleLogedinUser(response: Response<User>): NetworkResult<User> {
+        return when {
+            response.code() == 401 -> {
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handleStudentsResponse(response: Response<Student>): NetworkResult<Student> {
         return when {
             response.code() == 401 -> {
                 NetworkResult.Error("Not Authorized to access this Resource.")

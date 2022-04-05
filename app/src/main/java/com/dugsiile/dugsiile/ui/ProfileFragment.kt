@@ -1,6 +1,7 @@
 package com.dugsiile.dugsiile.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +51,9 @@ class ProfileFragment : Fragment() {
 
         if (!token.isNullOrEmpty()) {
             mainViewModel.getLogedinUser("Bearer $token")
+            mainViewModel.getStudents("Bearer $token")
             handleLogedinUserResponse()
+            handleStudentsResponse()
         }
 
         }
@@ -87,6 +90,30 @@ class ProfileFragment : Fragment() {
                     binding.progressBar.visibility= View.GONE
                     binding.ivImageError.visibility = View.GONE
                     binding.tvProfileError.visibility = View.GONE
+                }
+            }
+
+        }
+
+    }
+
+    private fun handleStudentsResponse() {
+        mainViewModel.studentsResponse.observe(viewLifecycleOwner) { response ->
+
+            when (response) {
+                is NetworkResult.Error -> {
+                    Log.d("students", response.message.toString())
+                    binding.progressBar.visibility= View.GONE
+                }
+                is NetworkResult.Loading -> {
+                    binding.progressBar.visibility= View.VISIBLE
+
+                }
+                is NetworkResult.Success -> {
+                   binding.tvStudents.text = "${response.data?.count} Students"
+
+                    binding.progressBar.visibility= View.GONE
+
                 }
             }
 
