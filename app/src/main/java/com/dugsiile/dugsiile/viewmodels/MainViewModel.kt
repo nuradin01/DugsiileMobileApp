@@ -73,6 +73,7 @@ class MainViewModel @Inject constructor(
             try {
                 val response = repository.remote.getLogedinUser(token)
                 logedinUser.value = handleLogedinUser(response)
+                Log.d("Token", token)
 
             } catch (e: Exception) {
                 logedinUser.value = NetworkResult.Error(e.message)
