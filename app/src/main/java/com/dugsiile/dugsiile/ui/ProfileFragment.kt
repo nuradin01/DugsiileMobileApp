@@ -72,6 +72,11 @@ class ProfileFragment : Fragment() {
                     binding.tvProfileError.text = response.message
 
                     binding.progressBar.visibility= View.GONE
+                    binding.cl2.visibility = View.GONE
+                    binding.ivProfilePicture.visibility= View.GONE
+                    binding.tvName.visibility = View.GONE
+                    binding.tvSchool.visibility = View.GONE
+                    binding.cardView2.visibility=View.GONE
 
                 }
                 is NetworkResult.Loading -> {
@@ -80,6 +85,12 @@ class ProfileFragment : Fragment() {
                     binding.tvProfileError.visibility = View.GONE
                 }
                 is NetworkResult.Success -> {
+                    binding.cl2.visibility = View.VISIBLE
+                    binding.ivProfilePicture.visibility= View.VISIBLE
+                    binding.tvName.visibility = View.VISIBLE
+                    binding.tvSchool.visibility = View.VISIBLE
+                    binding.cardView2.visibility=View.VISIBLE
+
                     binding.ivProfilePicture.load(Constants.BASE_URL + "/" + response.data?.data?.photo) {
                         crossfade(true)
                         error(R.drawable.ic_baseline_person_24)
@@ -104,12 +115,14 @@ class ProfileFragment : Fragment() {
                 is NetworkResult.Error -> {
                     Log.d("students", response.message.toString())
                     binding.progressBar.visibility= View.GONE
+                    binding.tvStudents.visibility=View.GONE
                 }
                 is NetworkResult.Loading -> {
                     binding.progressBar.visibility= View.VISIBLE
 
                 }
                 is NetworkResult.Success -> {
+                    binding.tvStudents.visibility=View.VISIBLE
                    binding.tvStudents.text = "${response.data?.count} Students"
 
                     binding.progressBar.visibility= View.GONE

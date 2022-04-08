@@ -95,7 +95,6 @@ class MainViewModel @Inject constructor(
             try {
                 val response = repository.remote.getStudents(token)
                 studentsResponse.value = handleStudentsResponse(response)
-                Log.d("Token", token)
 
             } catch (e: Exception) {
                 studentsResponse.value = NetworkResult.Error(e.message)

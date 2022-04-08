@@ -22,7 +22,7 @@ data class FeeData(
     @SerializedName("paidAt")
     val paidAt: Date?,
     @SerializedName("student")
-    val student: StudentData,
+    val student: String,
     @SerializedName("user")
     val user: String
 )

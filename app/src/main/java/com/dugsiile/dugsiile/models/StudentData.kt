@@ -11,6 +11,8 @@ data class StudentData(
     val fees: List<FeeData>?,
     @SerializedName("gender")
     val gender: String,
+    @SerializedName("id")
+    val id: String?,
     @SerializedName("photo")
     val photo: String?,
     @SerializedName("isLeft")
