@@ -18,10 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -31,13 +27,15 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivStudentPhoto"
                     loadImageFromUrl="@{student.photo}"
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_marginStart="8dp"
                     android:contentDescription="@string/student_photo"
                     android:padding="5dp"
@@ -60,7 +58,7 @@
                     android:maxLines="1"
                     android:text="@{student.name}"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ivTick"
@@ -72,7 +70,7 @@
                     android:id="@+id/ivTick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:contentDescription="@string/tick_icon"
                     applyTickColor="@{student.fees}"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -90,10 +88,11 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/background_gray"
-                    android:visibility="invisible"
+                    android:background="@color/background_light_gray"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/ivTick"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@id/ivStudentPhoto"
                     app:layout_constraintTop_toBottomOf="@id/tvStudentName"
                     app:layout_constraintVertical_bias="1.0" />
