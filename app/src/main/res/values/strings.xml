@@ -33,6 +33,7 @@
     <string name="student_photo">student photo</string>
     <string name="tick_icon">tick icon</string>
     <string name="error_icon">error_icon</string>
+    <string name="parent_icon">parent icon</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

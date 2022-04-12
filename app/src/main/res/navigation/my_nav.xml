@@ -64,10 +64,22 @@
             android:id="@+id/action_homeFragment_to_registerStudentFragment"
             app:destination="@id/registerStudentFragment"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_studentDetailsFragment"
+            app:destination="@id/studentDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.dugsiile.dugsiile.ui.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/studentDetailsFragment"
+        android:name="com.dugsiile.dugsiile.ui.StudentDetailsFragment"
+        android:label="Student details"
+        tools:layout="@layout/fragment_student_details" >
+        <argument
+            android:name="student"
+            app:argType="com.dugsiile.dugsiile.models.StudentData" />
+    </fragment>
 </navigation>

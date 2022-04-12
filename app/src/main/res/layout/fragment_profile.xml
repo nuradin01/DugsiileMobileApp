@@ -39,14 +39,12 @@
                     android:contentDescription="@string/profile_image_icon"
                     android:padding="5dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_person_24"
+                    android:src="@drawable/ic_person_round_white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                    app:strokeColor="@color/white"
-                    app:strokeWidth="5dp" />
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
                 <TextView
                     android:id="@+id/tvName"

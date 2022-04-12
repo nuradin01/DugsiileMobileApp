@@ -70,7 +70,7 @@
                 android:id="@+id/nameInputSignup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textCapWords"
                 android:hint="@string/name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,7 +161,7 @@
           android:id="@+id/divider"
           android:layout_width="match_parent"
           android:layout_height="3dp"
-          android:background="@color/background_dark_gray"
+          android:background="@color/background_light_gray"
           android:layout_marginTop="16dp"
           app:layout_constraintEnd_toEndOf="@+id/nameInputLayoutSignup"
           app:layout_constraintStart_toStartOf="@+id/nameInputLayoutSignup"

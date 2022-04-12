@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        onStudentClickListener="@{student}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/studentCard"
@@ -79,7 +80,7 @@
                     app:layout_constraintStart_toEndOf="@+id/tvStudentName"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.533"
-                    app:srcCompat="@drawable/ic_tick_48" />
+                    app:srcCompat="@drawable/ic_round_tick_circle" />
 
                 <View
                     android:id="@+id/view"

@@ -2,24 +2,21 @@ package com.dugsiile.dugsiile.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentProfileBinding
-import com.dugsiile.dugsiile.databinding.FragmentStudentRegisterBinding
 import com.dugsiile.dugsiile.util.Constants
 import com.dugsiile.dugsiile.util.NetworkResult
-import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
@@ -93,7 +90,7 @@ class ProfileFragment : Fragment() {
 
                     binding.ivProfilePicture.load(Constants.BASE_URL + "/" + response.data?.data?.photo) {
                         crossfade(true)
-                        error(R.drawable.ic_baseline_person_24)
+                        error(R.drawable.ic_person_round_white)
                     }
                     binding.tvName.text = response.data?.data?.name
                     binding.tvSchool.text = response.data?.data?.school
@@ -132,6 +129,10 @@ class ProfileFragment : Fragment() {
 
         }
 
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

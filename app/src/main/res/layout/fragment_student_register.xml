@@ -72,7 +72,7 @@
                     android:id="@+id/nameInputStudent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:hint="@string/student_name" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,14 +86,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/nameInputLayoutStudent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_enroll_student_picture"
-                app:startIconDrawable="@drawable/ic_person"
+                app:startIconDrawable="@drawable/ic_parent"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/parentInputStudent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:hint="@string/parent_name" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
@@ -164,7 +164,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/nameInputLayoutStudent"
                 app:layout_constraintTop_toBottomOf="@+id/genderInputLayoutStudent"
-                app:startIconDrawable="@drawable/ic_money"
+                app:startIconDrawable="@drawable/ic_dollar"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText

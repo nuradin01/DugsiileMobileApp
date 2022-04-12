@@ -47,6 +47,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.signupFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.studentDetailsFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                R.id.registerStudentFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }

@@ -1,9 +1,11 @@
 package com.dugsiile.dugsiile.models
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import java.util.*
-
+@Parcelize
 data class FeeData(
     @SerializedName("amountCharged")
     val amountCharged: Float,
@@ -13,7 +15,7 @@ data class FeeData(
     val balance: Float?,
     @SerializedName("chargedAt")
     val chargedAt: Date,
-    @SerializedName("id")
+    @SerializedName("_id")
     val id: String,
     @SerializedName("isPaid")
     val isPaid: Boolean,
@@ -25,4 +27,4 @@ data class FeeData(
     val student: String,
     @SerializedName("user")
     val user: String
-)
+) : Parcelable

@@ -1,17 +1,20 @@
 package com.dugsiile.dugsiile.models
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import java.util.*
-
+@Parcelize
 data class StudentData(
     @SerializedName("fee")
     val fee: Float?,
     @SerializedName("fees")
-    val fees: List<FeeData>?,
+    val fees: @RawValue List<FeeData>?,
     @SerializedName("gender")
     val gender: String,
-    @SerializedName("id")
+    @SerializedName("_id")
     val id: String?,
     @SerializedName("photo")
     val photo: String?,
@@ -35,4 +38,4 @@ data class StudentData(
     val studentSubjects: List<String>?,
     @SerializedName("user")
     val user: String?
-)
+) : Parcelable
