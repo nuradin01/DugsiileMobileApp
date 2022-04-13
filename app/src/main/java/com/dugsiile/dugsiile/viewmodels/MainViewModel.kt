@@ -38,6 +38,7 @@ class MainViewModel @Inject constructor(
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     var addStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
     var studentsResponse: MutableLiveData<NetworkResult<Student>> = MutableLiveData()
+    var deleteStudentsResponse: MutableLiveData<NetworkResult<DeleteResponse>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
@@ -48,6 +49,9 @@ class MainViewModel @Inject constructor(
 
     fun addStudent(token: String,studentData: StudentData)= viewModelScope.launch{
         addStudentSafeCall(token,studentData)
+    }
+    fun deleteStudent(token: String,_id: String)= viewModelScope.launch{
+        deleteStudentSafeCall(token,_id)
     }
 
     private suspend fun addStudentSafeCall(token: String,studentData: StudentData) {
@@ -106,6 +110,22 @@ class MainViewModel @Inject constructor(
 
     }
 
+    private suspend fun deleteStudentSafeCall(token: String,_id: String) {
+        deleteStudentsResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.deleteStudent(token,_id)
+                deleteStudentsResponse.value = handleDeleteStudentResponse(response)
+
+            } catch (e: Exception) {
+                deleteStudentsResponse.value = NetworkResult.Error(e.message)
+                Log.d("Delete student error", e.toString())
+            }
+        } else {
+            deleteStudentsResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
     private fun handleAddStudent(response: Response<StudentData>): NetworkResult<StudentData> {
         return when {
             response.code() == 401 ->{
@@ -144,6 +164,20 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Success(response.body()!!)
             }
             else -> {
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+    private fun handleDeleteStudentResponse(response: Response<DeleteResponse>): NetworkResult<DeleteResponse> {
+        return when {
+            response.code() == 401 ->{
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                Log.d("Delete Student error", response.message())
                 NetworkResult.Error(response.message())
             }
         }

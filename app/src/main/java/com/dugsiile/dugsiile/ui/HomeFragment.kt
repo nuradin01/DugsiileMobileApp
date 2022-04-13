@@ -101,7 +101,6 @@ class HomeFragment : Fragment() {
         when (item.itemId) {
             R.id.miSignout -> {
                 mainViewModel.signout()
-                Snackbar.make(binding.root, "Successfully signed out", Snackbar.LENGTH_SHORT).show()
             }
             R.id.miAddStudent -> {
                 val action =

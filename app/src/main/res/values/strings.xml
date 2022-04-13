@@ -34,6 +34,7 @@
     <string name="tick_icon">tick icon</string>
     <string name="error_icon">error_icon</string>
     <string name="parent_icon">parent icon</string>
+    <string name="delete_student">Delete Student</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

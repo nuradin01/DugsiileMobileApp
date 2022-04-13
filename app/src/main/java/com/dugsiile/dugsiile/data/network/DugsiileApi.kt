@@ -44,4 +44,10 @@ interface DugsiileApi {
         @Header("authorization") token: String,
     ) : Response<Student>
 
+    @DELETE("api/v1/students/{id}")
+    suspend fun deleteStudent(
+        @Header("authorization") token: String,
+        @Path ("id") id: String
+    ) : Response<DeleteResponse>
+
 }

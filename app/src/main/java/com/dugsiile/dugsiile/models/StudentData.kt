@@ -15,7 +15,7 @@ data class StudentData(
     @SerializedName("gender")
     val gender: String,
     @SerializedName("_id")
-    val id: String?,
+    val _id: String?,
     @SerializedName("photo")
     val photo: String?,
     @SerializedName("isLeft")
