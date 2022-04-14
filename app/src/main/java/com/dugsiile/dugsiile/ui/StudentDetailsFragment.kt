@@ -13,6 +13,7 @@ import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -55,8 +56,21 @@ class StudentDetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.miDeleteStudent -> {
-                mainViewModel.deleteStudent("Bearer $token", args.student._id!!)
-                handleDeleteStudentResponse()
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Delete ${args.student.name}?")
+
+                    .setMessage("Are you sure to delete ${args.student.name}?")
+
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton("Yes") { _, _ ->
+                        // Respond to positive button press
+                        mainViewModel.deleteStudent("Bearer $token", args.student._id!!)
+                        handleDeleteStudentResponse()
+                    }
+                    .show()
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -65,17 +79,15 @@ class StudentDetailsFragment : Fragment() {
     private fun handleDeleteStudentResponse() {
         mainViewModel.deleteStudentsResponse.observe(viewLifecycleOwner) { response ->
 
-            when(response){
+            when (response) {
                 is NetworkResult.Error -> {
 
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
 
                 }
-                is NetworkResult.Loading -> {
-                    Snackbar.make(binding.root, "Deleting ${args.student.name}", Snackbar.LENGTH_SHORT).show()
-                }
                 is NetworkResult.Success -> {
-                    Snackbar.make(binding.root, "Successfully deleted", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "Successfully deleted", Snackbar.LENGTH_SHORT)
+                        .show()
                     findNavController().popBackStack()
                 }
             }
