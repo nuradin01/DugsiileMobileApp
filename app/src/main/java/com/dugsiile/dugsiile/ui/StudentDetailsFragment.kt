@@ -15,6 +15,9 @@ import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class StudentDetailsFragment : Fragment() {
@@ -45,6 +48,17 @@ class StudentDetailsFragment : Fragment() {
         }
 
         setHasOptionsMenu(true)
+
+        // format joined date
+       val JoindedAt = SimpleDateFormat("d/M/yyyy").format(args.student.joinedAt!!)
+        binding.tvJoinedDateDetails.text = JoindedAt.toString()
+
+        if(args.student.isScholarship == true) {
+            binding.tvFeeDetails.text = "$0"
+        } else {
+            binding.tvFeeDetails.text = "$${args.student.fee.toString()}"
+        }
+
 
         return binding.root
     }
