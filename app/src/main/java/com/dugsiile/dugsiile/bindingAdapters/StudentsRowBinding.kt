@@ -17,6 +17,7 @@ import com.dugsiile.dugsiile.ui.HomeFragmentDirections
 import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
 import com.google.android.material.imageview.ShapeableImageView
 import java.lang.Exception
+import java.text.SimpleDateFormat
 
 class StudentsRowBinding {
     companion object {
@@ -37,8 +38,6 @@ class StudentsRowBinding {
         }
 
 
-
-
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
@@ -52,13 +51,22 @@ class StudentsRowBinding {
         @JvmStatic
         fun applyTickColor(imageView: ImageView, fees: List<FeeData>) {
             if (fees.isEmpty()) {
-              imageView.visibility = View.VISIBLE
+                imageView.visibility = View.VISIBLE
 
-            }
-            else {
+            } else {
                 imageView.visibility = View.GONE
             }
-            }
         }
+
+
+    @BindingAdapter("feeName")
+    @JvmStatic
+    fun feeName(textView: TextView, fee: FeeData) {
+        val chargedAtFormated = SimpleDateFormat("MMM, yyyy").format(fee.chargedAt)
+        textView.text = "$${fee.amountCharged} of $chargedAtFormated"
     }
+
+
+}}
+
 

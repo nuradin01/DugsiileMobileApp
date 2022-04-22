@@ -9,7 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dugsiile.dugsiile.R
+import com.dugsiile.dugsiile.adapters.FeeAdapter
+import com.dugsiile.dugsiile.adapters.StudentAdapter
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
@@ -24,6 +27,9 @@ class StudentDetailsFragment : Fragment() {
     private val args by navArgs<StudentDetailsFragmentArgs>()
     private lateinit var mainViewModel: MainViewModel
     private var token: String? = null
+
+    private val mAdapter by lazy { FeeAdapter() }
+
 
     private var _binding: FragmentStudentDetailsBinding? = null
     private val binding get() = _binding!!
@@ -58,9 +64,23 @@ class StudentDetailsFragment : Fragment() {
         } else {
             binding.tvFeeDetails.text = "$${args.student.fee.toString()}"
         }
+        if (args.student.fees!!.isNotEmpty()){
+            setupRecyclerView()
+            mAdapter.setData(args.student.fees!!)
+        } else {
+            binding.tvUnpaidFees.visibility = View.GONE
+            binding.unpaidFeesRecyclerview.visibility = View.GONE
+        }
 
 
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        binding.tvUnpaidFees.visibility = View.VISIBLE
+        binding.unpaidFeesRecyclerview.visibility = View.VISIBLE
+        binding.unpaidFeesRecyclerview.adapter = mAdapter
+        binding.unpaidFeesRecyclerview.layoutManager = LinearLayoutManager(requireContext())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
