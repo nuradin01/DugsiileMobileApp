@@ -3,8 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/miAddStudent"
-        android:title="Enroll Student"
+        android:title="@string/enroll_student"
         android:icon="@drawable/ic_person_add"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/miChargeAll"
+        android:title="@string/charge_all_paid_students"
+        android:icon="@drawable/ic_dollar"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/miSignout"

@@ -50,4 +50,9 @@ interface DugsiileApi {
         @Path ("id") id: String
     ) : Response<DeleteResponse>
 
+    @POST("api/v1/fees")
+    suspend fun chargeAllPaidStudents(
+        @Header("authorization") token: String,
+    ) : Response<Fee>
+
 }

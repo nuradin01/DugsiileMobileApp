@@ -1,5 +1,6 @@
 package com.dugsiile.dugsiile.ui
 
+import android.icu.text.CaseMap
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -15,6 +16,7 @@ import com.dugsiile.dugsiile.adapters.StudentAdapter
 import com.dugsiile.dugsiile.databinding.FragmentHomeBinding
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -57,6 +59,23 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
 
         setupRecyclerView()
+        mainViewModel.chargeAllResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    requestApiData()
+                    Snackbar.make(binding.root, "${response.data!!.count} students charged", Snackbar.LENGTH_SHORT).show()
+                    Log.d("charge all", response.data?.count.toString())
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+        }
 
 
 
@@ -107,6 +126,21 @@ class HomeFragment : Fragment() {
                     HomeFragmentDirections.actionHomeFragmentToRegisterStudentFragment()
                 findNavController().navigate(action)
             }
+            R.id.miChargeAll -> {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Charge Monthly Fee?")
+
+                    .setMessage("Are you sure you want to charge all paying students?")
+
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton("Yes") { _, _ ->
+
+                mainViewModel.chargeAllPaidStudents("Bearer $token")
+                    }
+                    .show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -130,6 +164,7 @@ class HomeFragment : Fragment() {
         binding.shimmerFrameLayout.visibility = View.GONE
         binding.recyclerview.visibility = View.VISIBLE
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

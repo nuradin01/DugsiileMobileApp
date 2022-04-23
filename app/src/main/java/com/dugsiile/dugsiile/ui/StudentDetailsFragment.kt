@@ -60,7 +60,7 @@ class StudentDetailsFragment : Fragment() {
         binding.tvJoinedDateDetails.text = JoindedAt.toString()
 
         if(args.student.isScholarship == true) {
-            binding.tvFeeDetails.text = "$0"
+            binding.tvFeeDetails.text = "Scholarship"
         } else {
             binding.tvFeeDetails.text = "$${args.student.fee.toString()}"
         }

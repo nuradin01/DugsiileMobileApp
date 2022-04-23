@@ -39,6 +39,7 @@ class MainViewModel @Inject constructor(
     var addStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
     var studentsResponse: MutableLiveData<NetworkResult<Student>> = MutableLiveData()
     var deleteStudentsResponse: MutableLiveData<NetworkResult<DeleteResponse>> = MutableLiveData()
+    var chargeAllResponse: MutableLiveData<NetworkResult<Fee>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
@@ -52,6 +53,9 @@ class MainViewModel @Inject constructor(
     }
     fun deleteStudent(token: String,_id: String)= viewModelScope.launch{
         deleteStudentSafeCall(token,_id)
+    }
+    fun chargeAllPaidStudents(token: String)= viewModelScope.launch{
+        chargeAllPaidStudentsSafeCall(token)
     }
 
     private suspend fun addStudentSafeCall(token: String,studentData: StudentData) {
@@ -126,6 +130,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private suspend fun chargeAllPaidStudentsSafeCall(token: String) {
+        chargeAllResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.chargeAllPaidStudents(token)
+                chargeAllResponse.value = handleChargeAll(response)
+
+                Log.d("add student Response", addStudentResponse.value?.data.toString())
+
+            } catch (e: Exception) {
+                addStudentResponse.value = NetworkResult.Error(e.message)
+                Log.d("charge all error", e.toString())
+            }
+        } else {
+            chargeAllResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
     private fun handleAddStudent(response: Response<StudentData>): NetworkResult<StudentData> {
         return when {
             response.code() == 401 ->{
@@ -178,6 +200,20 @@ class MainViewModel @Inject constructor(
             }
             else -> {
                 Log.d("Delete Student error", response.message())
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+    private fun handleChargeAll(response: Response<Fee>): NetworkResult<Fee> {
+        return when {
+            response.code() == 401 ->{
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                Log.d("charge all error", response.message())
                 NetworkResult.Error(response.message())
             }
         }
