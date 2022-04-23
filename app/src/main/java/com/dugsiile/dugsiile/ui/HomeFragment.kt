@@ -128,6 +128,7 @@ class HomeFragment : Fragment() {
             }
             R.id.miChargeAll -> {
                 MaterialAlertDialogBuilder(requireContext())
+                    .setIcon(R.drawable.ic_dollar)
                     .setTitle("Charge Monthly Fee?")
 
                     .setMessage("Are you sure you want to charge all paying students?")

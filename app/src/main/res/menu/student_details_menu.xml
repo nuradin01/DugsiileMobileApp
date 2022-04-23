@@ -6,4 +6,8 @@
         android:title="@string/delete_student"
         android:icon="@drawable/ic_round_delete"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/miChargeStudent"
+        android:title="@string/charge_single_student"
+        android:icon="@drawable/ic_dollar"
+        app:showAsAction="ifRoom"/>
 </menu>

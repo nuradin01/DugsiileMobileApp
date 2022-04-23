@@ -12,21 +12,20 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.adapters.FeeAdapter
-import com.dugsiile.dugsiile.adapters.StudentAdapter
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
+import com.dugsiile.dugsiile.models.FeeData
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 class StudentDetailsFragment : Fragment() {
     private val args by navArgs<StudentDetailsFragmentArgs>()
     private lateinit var mainViewModel: MainViewModel
     private var token: String? = null
+    private lateinit var feeList: MutableList<FeeData>
 
     private val mAdapter by lazy { FeeAdapter() }
 
@@ -64,9 +63,12 @@ class StudentDetailsFragment : Fragment() {
         } else {
             binding.tvFeeDetails.text = "$${args.student.fee.toString()}"
         }
-        if (args.student.fees!!.isNotEmpty()){
+
+         feeList= args.student.fees!!.toMutableList()
+
+        if (feeList.isNotEmpty()){
             setupRecyclerView()
-            mAdapter.setData(args.student.fees!!)
+            mAdapter.setData(feeList.toList())
         } else {
             binding.tvUnpaidFees.visibility = View.GONE
             binding.unpaidFeesRecyclerview.visibility = View.GONE
@@ -87,10 +89,16 @@ class StudentDetailsFragment : Fragment() {
         inflater.inflate(R.menu.student_details_menu, menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.miChargeStudent).isVisible = !args.student.isScholarship!!
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.miDeleteStudent -> {
                 MaterialAlertDialogBuilder(requireContext())
+                    .setIcon(R.drawable.ic_round_delete)
                     .setTitle("Delete ${args.student.name}?")
 
                     .setMessage("Are you sure to delete ${args.student.name}?")
@@ -105,6 +113,23 @@ class StudentDetailsFragment : Fragment() {
                     }
                     .show()
 
+            }
+            R.id.miChargeStudent -> {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setIcon(R.drawable.ic_dollar)
+                    .setTitle("Charge Monthly Fee?")
+
+                    .setMessage("Are you sure you want to charge ${args.student.name}?")
+
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton("Yes") { _, _ ->
+
+                        mainViewModel.chargeStudent("Bearer $token", args.student._id!!)
+                        handleChargeStudentResponse()
+                    }
+                    .show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -127,6 +152,27 @@ class StudentDetailsFragment : Fragment() {
             }
 
         }
+    }
+    private fun handleChargeStudentResponse() {
+        mainViewModel.chargeStudentResponse.observe(viewLifecycleOwner) {response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    feeList.add(response.data!!.data)
+                    setupRecyclerView()
+                    mAdapter.setData(feeList.toList())
+                    Snackbar.make(binding.root, "$${response.data.data.amountCharged} was charged", Snackbar.LENGTH_SHORT).show()
+                    Log.d("charge single student", response.data.toString())
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        response.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            } }
     }
 
     override fun onDestroyView() {
