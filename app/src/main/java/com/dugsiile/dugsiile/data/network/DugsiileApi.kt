@@ -60,5 +60,10 @@ interface DugsiileApi {
         @Header("authorization") token: String,
         @Path ("id") id: String
     ) : Response<ChargeSingleStudent>
+    @PUT("api/v1/fees/{id}")
+    suspend fun receivePayment(
+        @Header("authorization") token: String,
+        @Path ("id") id: String
+    ) : Response<ChargeSingleStudent>
 
 }

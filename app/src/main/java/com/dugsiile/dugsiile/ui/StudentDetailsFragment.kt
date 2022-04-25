@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -21,13 +22,13 @@ import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 
 
-class StudentDetailsFragment : Fragment() {
+public class StudentDetailsFragment : Fragment() {
     private val args by navArgs<StudentDetailsFragmentArgs>()
     private lateinit var mainViewModel: MainViewModel
     private var token: String? = null
     private lateinit var feeList: MutableList<FeeData>
 
-    private val mAdapter by lazy { FeeAdapter() }
+    private  val  mAdapter by lazy { FeeAdapter(mainViewModel)}
 
 
     private var _binding: FragmentStudentDetailsBinding? = null
@@ -49,8 +50,11 @@ class StudentDetailsFragment : Fragment() {
 
         mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
             token = value
-
+            if (!token.isNullOrEmpty()) {
+                mAdapter.getToken(token!!)
+            }
         }
+        mAdapter.getLifecycleOwner(viewLifecycleOwner)
 
         setHasOptionsMenu(true)
 
@@ -73,6 +77,7 @@ class StudentDetailsFragment : Fragment() {
             binding.tvUnpaidFees.visibility = View.GONE
             binding.unpaidFeesRecyclerview.visibility = View.GONE
         }
+
 
 
         return binding.root
@@ -172,7 +177,8 @@ class StudentDetailsFragment : Fragment() {
 
                 }
 
-            } }
+            }
+        }
     }
 
     override fun onDestroyView() {

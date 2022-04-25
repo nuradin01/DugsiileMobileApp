@@ -43,4 +43,7 @@ class RemoteDataSource  @Inject constructor(
     suspend fun chargeStudent(token: String, id: String): Response<ChargeSingleStudent> {
         return dugsiileApi.chargeStudent(token,id)
     }
+    suspend fun receivePayment(token: String, id: String): Response<ChargeSingleStudent> {
+        return dugsiileApi.receivePayment(token,id)
+    }
 }

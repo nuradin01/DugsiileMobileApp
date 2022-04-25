@@ -20,6 +20,7 @@
             app:cardElevation="5dp"
             app:cardCornerRadius="4dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="2dp"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,13 +50,13 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/btnPay"
+                    app:layout_constraintEnd_toStartOf="@+id/btnReceive"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/btnPay"
+                    android:id="@+id/btnReceive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -68,18 +69,7 @@
                     app:layout_constraintStart_toEndOf="@+id/tvFeeInfo"
                     app:layout_constraintTop_toTopOf="@+id/tvFeeInfo" />
 
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@color/background_light_gray"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/tvFeeInfo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFeeInfo"
-                    tools:visibility="visible" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

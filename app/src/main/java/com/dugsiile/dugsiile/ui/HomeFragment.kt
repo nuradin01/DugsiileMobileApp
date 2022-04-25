@@ -59,23 +59,6 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
 
         setupRecyclerView()
-        mainViewModel.chargeAllResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkResult.Success -> {
-                    requestApiData()
-                    Snackbar.make(binding.root, "${response.data!!.count} students charged", Snackbar.LENGTH_SHORT).show()
-                    Log.d("charge all", response.data?.count.toString())
-                }
-                is NetworkResult.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        response.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-        }
 
 
 
@@ -139,6 +122,7 @@ class HomeFragment : Fragment() {
                     .setPositiveButton("Yes") { _, _ ->
 
                 mainViewModel.chargeAllPaidStudents("Bearer $token")
+                handleChargeAllPaidStudentsResponse()
                     }
                     .show()
             }
@@ -151,6 +135,25 @@ class HomeFragment : Fragment() {
             val action =
                 HomeFragmentDirections.actionHomeFragmentToLoginFragment()
             findNavController().navigate(action)
+        }
+    }
+    private fun handleChargeAllPaidStudentsResponse(){
+        mainViewModel.chargeAllResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    requestApiData()
+                    Snackbar.make(binding.root, "${response.data!!.count} students charged", Snackbar.LENGTH_SHORT).show()
+                    Log.d("charge all", response.data?.count.toString())
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
         }
     }
 
