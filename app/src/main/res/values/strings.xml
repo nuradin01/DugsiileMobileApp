@@ -37,6 +37,7 @@
     <string name="delete_student">Delete Student</string>
     <string name="charge_all_paid_students">Charge all paid students</string>
     <string name="charge_single_student">charge single student</string>
+    <string name="subjects">Subjects</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

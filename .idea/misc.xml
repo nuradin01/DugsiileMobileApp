@@ -22,7 +22,7 @@
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_fees.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_login.xml" value="0.22" />
-        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_profile.xml" value="0.3333333333333333" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_signup.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_student.xml" value="0.13177083333333334" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/fragment_student_details.xml" value="0.39323220536756126" />
@@ -30,6 +30,7 @@
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/gender.xml" value="0.14356884057971014" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/shimmer_layout.xml" value="0.5" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/student_row_layout.xml" value="0.1" />
+        <entry key="..\:/programming/Dugsiile/app/src/main/res/layout/subjects_row_layout.xml" value="0.21518987341772153" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/menu/bottom_nav_menu.xml" value="0.17552083333333332" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/menu/home_menu.xml" value="0.22" />
         <entry key="..\:/programming/Dugsiile/app/src/main/res/menu/student_details_menu.xml" value="0.17552083333333332" />

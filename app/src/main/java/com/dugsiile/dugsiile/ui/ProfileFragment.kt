@@ -5,12 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import coil.load
 import com.dugsiile.dugsiile.R
+import com.dugsiile.dugsiile.adapters.StudentAdapter
+import com.dugsiile.dugsiile.adapters.SubjectsAdapter
 import com.dugsiile.dugsiile.databinding.FragmentProfileBinding
 import com.dugsiile.dugsiile.util.Constants
 import com.dugsiile.dugsiile.util.NetworkResult
@@ -27,6 +33,7 @@ class ProfileFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
 
     private var token: String? = null
+    private val mAdapter by lazy { SubjectsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +61,8 @@ class ProfileFragment : Fragment() {
         }
 
         }
+        binding.subjectsRecyclerView.adapter = mAdapter
+        binding.subjectsRecyclerView.layoutManager = GridLayoutManager(context,2)
 
 
         return binding.root
@@ -74,6 +83,9 @@ class ProfileFragment : Fragment() {
                     binding.tvName.visibility = View.GONE
                     binding.tvSchool.visibility = View.GONE
                     binding.cardView2.visibility=View.GONE
+                    binding.tvEmail.visibility = View.GONE
+                    binding.tvGender.visibility = View.GONE
+                    binding.tvSubjects.visibility = View.GONE
 
                 }
                 is NetworkResult.Loading -> {
@@ -87,6 +99,9 @@ class ProfileFragment : Fragment() {
                     binding.tvName.visibility = View.VISIBLE
                     binding.tvSchool.visibility = View.VISIBLE
                     binding.cardView2.visibility=View.VISIBLE
+                    binding.tvEmail.visibility = View.VISIBLE
+                    binding.tvGender.visibility = View.VISIBLE
+                    binding.tvSubjects.visibility = View.VISIBLE
 
                     binding.ivProfilePicture.load(Constants.BASE_URL + "/" + response.data?.data?.photo) {
                         crossfade(true)
@@ -94,6 +109,9 @@ class ProfileFragment : Fragment() {
                     }
                     binding.tvName.text = response.data?.data?.name
                     binding.tvSchool.text = response.data?.data?.school
+                    binding.tvEmail.text = response.data?.data?.email
+                    binding.tvGender.text = response.data?.data?.gender
+                    mAdapter.setData(response.data!!.data.schoolSubjects)
 
                     binding.progressBar.visibility= View.GONE
                     binding.ivImageError.visibility = View.GONE
