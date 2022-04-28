@@ -47,9 +47,10 @@ class StudentsRowBinding {
             }
         }
 
-        @BindingAdapter("applyTickColor")
+        @BindingAdapter("showTickIcon")
         @JvmStatic
-        fun applyTickColor(imageView: ImageView, fees: List<FeeData>) {
+
+        fun showTickIcon(imageView: ImageView, fees: List<FeeData>) {
             if (fees.isEmpty()) {
                 imageView.visibility = View.VISIBLE
 

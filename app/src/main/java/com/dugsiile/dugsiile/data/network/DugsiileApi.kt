@@ -66,4 +66,10 @@ interface DugsiileApi {
         @Path ("id") id: String
     ) : Response<ChargeSingleStudent>
 
+    @GET("api/v1/fees")
+    suspend fun getFees(
+        @Header("authorization") token: String,
+        @QueryMap queries: Map<String,String>
+    ) : Response<Fee>
+
 }

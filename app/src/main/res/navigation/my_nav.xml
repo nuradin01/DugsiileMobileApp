@@ -51,7 +51,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.dugsiile.dugsiile.ui.HomeFragment"
-        android:label="Home"
+        android:label="Students"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"

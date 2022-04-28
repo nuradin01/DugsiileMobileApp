@@ -42,6 +42,7 @@ class MainViewModel @Inject constructor(
     var chargeAllResponse: MutableLiveData<NetworkResult<Fee>> = MutableLiveData()
     var chargeStudentResponse: MutableLiveData<NetworkResult<ChargeSingleStudent>> = MutableLiveData()
     var receivePaymentResponse: MutableLiveData<NetworkResult<ChargeSingleStudent>> = MutableLiveData()
+    var getFeesResponse: MutableLiveData<NetworkResult<Fee>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
@@ -64,6 +65,9 @@ class MainViewModel @Inject constructor(
     }
     fun receivePayment(token: String, id: String)= viewModelScope.launch{
         receivePaymentSafeCall(token,id)
+    }
+    fun getFees(token: String, queries: Map<String,String>)= viewModelScope.launch{
+        getFeesSafeCall(token,queries)
     }
 
     private suspend fun addStudentSafeCall(token: String,studentData: StudentData) {
@@ -188,6 +192,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getFeesSafeCall(token: String, queries: Map<String, String>) {
+        getFeesResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.getFees(token,queries)
+                getFeesResponse.value = handleGetFeesResponse(response)
+
+            } catch (e: Exception) {
+                getFeesResponse.value = NetworkResult.Error(e.message)
+                Log.d("get fees error", e.toString())
+            }
+        } else {
+            getFeesResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
     private fun handleAddStudent(response: Response<StudentData>): NetworkResult<StudentData> {
         return when {
             response.code() == 401 ->{
@@ -285,6 +305,22 @@ class MainViewModel @Inject constructor(
             }
             else -> {
                 Log.d("receive payment error", response.message())
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handleGetFeesResponse(response: Response<Fee>): NetworkResult<Fee> {
+        return when {
+            response.code() == 401 ->{
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+
+            }
+            else -> {
+                Log.d("get fees error", response.message())
                 NetworkResult.Error(response.message())
             }
         }
