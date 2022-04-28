@@ -63,7 +63,7 @@ class StudentsRowBinding {
     @BindingAdapter("feeName")
     @JvmStatic
     fun feeName(textView: TextView, fee: FeeData) {
-        val chargedAtFormated = SimpleDateFormat("MMM, yyyy").format(fee.chargedAt)
+        val chargedAtFormated = SimpleDateFormat("MMMM, yyyy").format(fee.chargedAt)
         textView.text = "$${fee.amountCharged} of $chargedAtFormated"
     }
 

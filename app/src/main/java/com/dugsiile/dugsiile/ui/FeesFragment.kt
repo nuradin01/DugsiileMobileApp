@@ -1,34 +1,26 @@
 package com.dugsiile.dugsiile.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.core.util.Pair
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentFeesBinding
-import com.dugsiile.dugsiile.databinding.FragmentHomeBinding
 import com.dugsiile.dugsiile.models.FeeData
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.gson.internal.bind.util.ISO8601Utils
 import dagger.hilt.android.AndroidEntryPoint
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.Year
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
 class FeesFragment : Fragment() {
@@ -46,17 +38,18 @@ class FeesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFeesBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         calendar = Calendar.getInstance()
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
@@ -73,11 +66,17 @@ class FeesFragment : Fragment() {
             }
 
         }
+        binding.tvChoose.text = SimpleDateFormat("MMMM").format(calendar.time)
+
+        val constraints: CalendarConstraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .build()
 
         binding.tvChoose.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.dateRangePicker().build()
+            val datePicker = MaterialDatePicker.Builder.dateRangePicker().setCalendarConstraints(constraints)
+                .setSelection(Pair.create(defaultStart,defaultEnd))
+                .build()
             datePicker.show(parentFragmentManager, "DatePicker")
-
             // Setting up the event for when ok is clicked
             datePicker.addOnPositiveButtonClickListener {
                 Toast.makeText(
@@ -123,16 +122,14 @@ class FeesFragment : Fragment() {
                 is NetworkResult.Success -> {
                         var totalFee  =0f
                         var cashInHand  =0f
-                        var remainingFees  =0f
-                        var paidFees = emptyList<FeeData>()
                     response.data?.data?.forEach {
                         totalFee += it.amountCharged
                     }
-                    paidFees= response.data!!.data.filter { it.isPaid }
+                    val paidFees: List<FeeData> = response.data!!.data.filter { it.isPaid }
                     paidFees.forEach {
                         cashInHand += it.amountPaid!!
                     }
-                    remainingFees= totalFee-cashInHand
+                    val remainingFees: Float = totalFee-cashInHand
 
                   Log.d("total fees", totalFee.toString())
                   Log.d("cash in hand", cashInHand.toString())
