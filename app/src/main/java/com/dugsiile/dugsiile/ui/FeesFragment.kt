@@ -79,11 +79,7 @@ class FeesFragment : Fragment() {
             datePicker.show(parentFragmentManager, "DatePicker")
             // Setting up the event for when ok is clicked
             datePicker.addOnPositiveButtonClickListener {
-                Toast.makeText(
-                    requireContext(),
-                    "${datePicker.selection?.first} is selected",
-                    Toast.LENGTH_LONG
-                ).show()
+
                 binding.tvChoose.text= datePicker.headerText
                 Log.d("timestamp first", datePicker.selection?.first.toString())
                 Log.d("timestamp second", datePicker.selection?.second.toString())
@@ -93,19 +89,7 @@ class FeesFragment : Fragment() {
                 handleFeeResponse()
             }
 
-            // Setting up the event for when cancelled is clicked
-            datePicker.addOnNegativeButtonClickListener {
-                Toast.makeText(
-                    requireContext(),
-                    "${datePicker.headerText} is cancelled",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
 
-            // Setting up the event for when back button is pressed
-            datePicker.addOnCancelListener {
-                Toast.makeText(requireContext(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
-            }
         }
 
         return binding.root
@@ -117,9 +101,24 @@ class FeesFragment : Fragment() {
             when (response) {
                 is NetworkResult.Error -> {
                     Log.d("get fees error", response.message.toString())
-
+                    binding.ivImageError.visibility = View.VISIBLE
+                    binding.tvFeeError.visibility = View.VISIBLE
+                    binding.progressBarLoading.visibility=  View.GONE
+                    binding.progressCardView.visibility = View.GONE
+                    binding.cashInHandCard.visibility= View.GONE
+                    binding.remainingFeeCard.visibility= View.GONE
+                }
+                is NetworkResult.Loading -> {
+                    binding.progressBarLoading.visibility=  View.VISIBLE
                 }
                 is NetworkResult.Success -> {
+                    binding.progressCardView.visibility = View.VISIBLE
+                    binding.cashInHandCard.visibility= View.VISIBLE
+                    binding.remainingFeeCard.visibility= View.VISIBLE
+                    binding.progressBarLoading.visibility=  View.GONE
+                    binding.ivImageError.visibility = View.GONE
+                    binding.tvFeeError.visibility = View.GONE
+
                         var totalFee  =0f
                         var cashInHand  =0f
                     response.data?.data?.forEach {
@@ -130,6 +129,14 @@ class FeesFragment : Fragment() {
                         cashInHand += it.amountPaid!!
                     }
                     val remainingFees: Float = totalFee-cashInHand
+                    if (totalFee ==0.0f) {
+                        Toast.makeText(requireContext(), "There is no data to show in this range", Toast.LENGTH_LONG).show()
+                    } else {
+                        binding.tvCashInHand.text = "$${cashInHand.toString()}"
+                        binding.tvRemainingFee.text = "$${remainingFees.toString()}"
+                        binding.progressBar.progress = ((cashInHand/remainingFees)*100).toInt()
+                        binding.tvPercentage.text = "${(cashInHand/remainingFees)*100}%"
+                    }
 
                   Log.d("total fees", totalFee.toString())
                   Log.d("cash in hand", cashInHand.toString())
