@@ -77,10 +77,12 @@ class HomeFragment : Fragment() {
         mainViewModel.studentsResponse.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResult.Success -> {
+                    binding.recyclerview.visibility = View.VISIBLE
                     hideShimmerEffect()
                     response.data?.let { mAdapter.setData(it) }
                 }
                 is NetworkResult.Error -> {
+                    binding.recyclerview.visibility = View.GONE
                     hideShimmerEffect()
                     Toast.makeText(
                         requireContext(),
@@ -89,6 +91,7 @@ class HomeFragment : Fragment() {
                     ).show()
                 }
                 is NetworkResult.Loading -> {
+                    binding.recyclerview.visibility = View.VISIBLE
                     showShimmerEffect()
                 }
             }

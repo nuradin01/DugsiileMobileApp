@@ -21,6 +21,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class FeesFragment : Fragment() {
@@ -100,6 +101,7 @@ class FeesFragment : Fragment() {
 
             when (response) {
                 is NetworkResult.Error -> {
+                    binding.tvFeeError.text = response.message
                     Log.d("get fees error", response.message.toString())
                     binding.ivImageError.visibility = View.VISIBLE
                     binding.tvFeeError.visibility = View.VISIBLE
@@ -134,8 +136,8 @@ class FeesFragment : Fragment() {
                     } else {
                         binding.tvCashInHand.text = "$${cashInHand.toString()}"
                         binding.tvRemainingFee.text = "$${remainingFees.toString()}"
-                        binding.progressBar.progress = ((cashInHand/remainingFees)*100).toInt()
-                        binding.tvPercentage.text = "${(cashInHand/remainingFees)*100}%"
+                        binding.progressBar.progress = ((cashInHand/totalFee)*100).toInt()
+                        binding.tvPercentage.text = "${((cashInHand/totalFee)*100).roundToInt()}%"
                     }
 
                   Log.d("total fees", totalFee.toString())
