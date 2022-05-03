@@ -44,7 +44,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     feeName="@{fee}"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/btnReceive"

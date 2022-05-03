@@ -65,7 +65,7 @@
                     android:id="@+id/tvPercentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primary_700"
+                    android:textColor="@color/circleColor"
                     android:textSize="40sp"
                     app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
                     app:layout_constraintEnd_toEndOf="@+id/progress_bar"

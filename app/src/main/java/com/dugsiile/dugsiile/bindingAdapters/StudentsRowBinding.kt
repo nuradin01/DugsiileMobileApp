@@ -41,7 +41,7 @@ class StudentsRowBinding {
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
-            imageView.load("$BASE_URL/$imageUrl") {
+            imageView.load(imageUrl) {
                 crossfade(600)
                 error(R.drawable.ic_person_round)
             }

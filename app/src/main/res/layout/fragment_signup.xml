@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background_color"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +29,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
             android:text="@string/sign_up"
-            android:textColor="@color/black"
+            android:textColor="@color/textColor"
             android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/iv_signup_picture"
@@ -161,7 +161,7 @@
           android:id="@+id/divider"
           android:layout_width="match_parent"
           android:layout_height="3dp"
-          android:background="@color/background_light_gray"
+          android:background="@color/background_color"
           android:layout_marginTop="16dp"
           app:layout_constraintEnd_toEndOf="@+id/nameInputLayoutSignup"
           app:layout_constraintStart_toStartOf="@+id/nameInputLayoutSignup"

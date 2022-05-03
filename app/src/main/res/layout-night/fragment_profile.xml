@@ -28,7 +28,7 @@
                 android:id="@+id/cl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/profile_background_light">
+                android:background="@drawable/profile_background_dark">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_profile_picture"

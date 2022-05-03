@@ -103,7 +103,7 @@ class ProfileFragment : Fragment() {
                     binding.tvGender.visibility = View.VISIBLE
                     binding.tvSubjects.visibility = View.VISIBLE
 
-                    binding.ivProfilePicture.load(Constants.BASE_URL + "/" + response.data?.data?.photo) {
+                    binding.ivProfilePicture.load(response.data?.data?.photo) {
                         crossfade(true)
                         error(R.drawable.ic_person_round_white)
                     }

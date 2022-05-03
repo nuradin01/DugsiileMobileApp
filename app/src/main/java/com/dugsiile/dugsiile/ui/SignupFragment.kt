@@ -133,7 +133,7 @@ class SignupFragment : Fragment() {
                 is NetworkResult.Success -> {
                     photo = response.data?.image.toString()
                     Log.d("uploadImage", response.data?.image.toString())
-                    binding.ivSignupPicture.load(BASE_URL + "/" + response.data!!.image) {
+                    binding.ivSignupPicture.load( response.data!!.image) {
                         crossfade(true)
                         error(R.drawable.ic_upload_profile)
                     }

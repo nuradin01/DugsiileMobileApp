@@ -140,6 +140,7 @@ class AuthViewModel @Inject constructor(
                 NetworkResult.Error("Something went wrong")
             }
             response.isSuccessful -> {
+                Log.d("uploadImage", response.body()!!.image.toString())
                 NetworkResult.Success(response.body()!!)
             }
             else -> {

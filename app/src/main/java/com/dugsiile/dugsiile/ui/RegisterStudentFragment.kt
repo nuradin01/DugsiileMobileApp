@@ -145,8 +145,8 @@ class RegisterStudentFragment : Fragment() {
                 }
                 is NetworkResult.Success -> {
                     photo = response.data?.image.toString()
-                    Log.d("uploadImage", response.data?.image.toString())
-                    binding.ivEnrollStudentPicture.load(Constants.BASE_URL + "/" + response.data!!.image) {
+                    Log.d("uploadImage", response.data.toString())
+                    binding.ivEnrollStudentPicture.load( response.data!!.image) {
                         crossfade(true)
                         error(R.drawable.ic_upload_profile)
                     }

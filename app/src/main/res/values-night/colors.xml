@@ -10,7 +10,7 @@
 
     // Dugsiile colors
     <color name="placeholder_background">#989898</color>
-    <color name="background_color">#e8e8e8</color>
+    <color name="background_color">#121212</color>
     <color name="primary_700">#017969</color>
     <color name="primary_800">#01695b</color>
     <color name="primary_900">#004d3f</color>9
@@ -31,7 +31,8 @@
     <color name="secondary_200">#84e0f1</color>
     <color name="secondary_100">#b5ecf6</color>
 
-    <color name="textColor">@color/black</color>
-    <color name="circleColor">@color/primary_700</color>
+    <color name="textColor">@color/white</color>
+    <color name="circleColor">@color/primary_400</color>
+
 
 </resources>

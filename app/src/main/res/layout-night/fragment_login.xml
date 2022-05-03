@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.LoginFragment"
-        android:background="@drawable/login_background_light">
+        android:background="@drawable/login_background_dark">
 
         <TextView
             android:id="@+id/tvLogo"
