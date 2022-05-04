@@ -101,7 +101,13 @@ class FeesFragment : Fragment() {
 
             when (response) {
                 is NetworkResult.Error -> {
-                    binding.tvFeeError.text = response.message
+                    if (response.message != "Unable to resolve host " +
+                        "\"dugsiilemobile.herokuapp.com\": No address " +
+                        "associated with hostname") {
+                        binding.tvFeeError.text = response.message
+                    } else {
+                        binding.tvFeeError.text = "Something went wrong."
+                    }
                     Log.d("get fees error", response.message.toString())
                     binding.ivImageError.visibility = View.VISIBLE
                     binding.tvFeeError.visibility = View.VISIBLE
@@ -109,6 +115,11 @@ class FeesFragment : Fragment() {
                     binding.progressCardView.visibility = View.GONE
                     binding.cashInHandCard.visibility= View.GONE
                     binding.remainingFeeCard.visibility= View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 is NetworkResult.Loading -> {
                     binding.progressBarLoading.visibility=  View.VISIBLE

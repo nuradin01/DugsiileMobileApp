@@ -5,11 +5,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dugsiile.dugsiile.data.DataStoreRepository
 import com.dugsiile.dugsiile.data.Repository
+import com.dugsiile.dugsiile.data.database.StudentsEntity
+import com.dugsiile.dugsiile.data.database.UserEntity
 import com.dugsiile.dugsiile.models.*
 import com.dugsiile.dugsiile.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,12 +27,28 @@ class MainViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
 
-    val readToken = dataStoreRepository.readToken
 
+    val readToken = dataStoreRepository.readToken
     fun signout() =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.signout()
         }
+
+
+    /** ROOM DATABASE */
+    val readStudents: LiveData<List<StudentsEntity>> = repository.local.readStudents().asLiveData()
+    val readUser: LiveData<List<UserEntity>> = repository.local.readUser().asLiveData()
+
+    private fun insertStudents(studentsEntity: StudentsEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.insertStudents(studentsEntity)
+        }
+
+    private fun insertUser(userEntity: UserEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.insertUser(userEntity)
+        }
+
 
     /** RETROFIT */
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
@@ -229,6 +245,8 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Error("Not Authorized to access this Resource.")
             }
             response.isSuccessful -> {
+                val user = response.body()!!.data
+                offlineCacheUser(user)
                 NetworkResult.Success(response.body()!!)
             }
             else -> {
@@ -243,6 +261,10 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Error("Not Authorized to access this Resource.")
             }
             response.isSuccessful -> {
+                val student = response.body()
+                if(student != null) {
+                    offlineCacheStudents(student)
+                }
                 NetworkResult.Success(response.body()!!)
             }
             else -> {
@@ -325,6 +347,20 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    // offline caching
+
+    private fun offlineCacheStudents(student: Student) {
+        val studentsEntity = StudentsEntity(student)
+        insertStudents(studentsEntity)
+    }
+
+    private fun offlineCacheUser(user: UserData) {
+        val userEntity = UserEntity(user)
+        insertUser(userEntity)
+    }
+
+
 
 
     private fun hasInternetConnection(): Boolean {

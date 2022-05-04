@@ -82,8 +82,27 @@ class HomeFragment : Fragment() {
                     response.data?.let { mAdapter.setData(it) }
                 }
                 is NetworkResult.Error -> {
-                    binding.recyclerview.visibility = View.GONE
+                    lifecycleScope.launch {
+                        mainViewModel.readStudents.observe(viewLifecycleOwner) { database ->
+                            if (!database.isNullOrEmpty()) {
+                                mAdapter.setData(database.first().student)
+                                binding.errorImageView.visibility = View.GONE
+                                binding.errorTextView.visibility = View.GONE
+                            } else {
+                                binding.errorImageView.visibility = View.VISIBLE
+                                binding.errorTextView.visibility = View.VISIBLE
+                                if (response.message != "Unable to resolve host " +
+                                    "\"dugsiilemobile.herokuapp.com\": No address " +
+                                    "associated with hostname") {
+                                binding.errorTextView.text = response.message
+                                } else {
+                                    binding.errorTextView.text = "Something went wrong."
+                                }
+                            }
+                        }
+                    }
                     hideShimmerEffect()
+                    Log.d("students response error", response.message.toString())
                     Toast.makeText(
                         requireContext(),
                         response.message.toString(),

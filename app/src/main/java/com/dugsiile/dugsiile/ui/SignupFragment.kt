@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dugsiile.dugsiile.R
@@ -27,6 +28,7 @@ import com.dugsiile.dugsiile.models.UserData
 import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
+import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType
@@ -47,6 +49,7 @@ class SignupFragment : Fragment() {
 
 
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>() {
         override fun createIntent(context: Context, input: List<Uri>): Intent {
@@ -80,7 +83,8 @@ class SignupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -221,10 +225,15 @@ class SignupFragment : Fragment() {
                 }
                 is NetworkResult.Success -> {
                     authViewModel.saveToken(response.data?.token!!)
-                    Thread.sleep(200)
-                    cancelProgressDialog()
-                    val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
-                    findNavController().navigate(action)
+                    mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
+                        if (!value.isNullOrEmpty()) {
+                            cancelProgressDialog()
+                            val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
+                            findNavController().navigate(action)
+                        }
+                    }
+
+
                 }
             }
 

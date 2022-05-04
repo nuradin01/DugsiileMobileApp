@@ -1,5 +1,6 @@
 package com.dugsiile.dugsiile.bindingAdapters
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,6 +26,7 @@ class HomeScreenBinding {
                 is TextView ->{
                     view.isVisible = apiResponse is NetworkResult.Error
                     view.text = apiResponse?.message.toString()
+                    Log.d("response code", apiResponse?.message.toString())
                 }
             }
         }

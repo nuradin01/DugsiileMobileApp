@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.models.EmailAndPassword
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
+import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -28,10 +30,12 @@ class LoginFragment : Fragment() {
     private var dialog : Dialog? = null
 
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
     }
     override fun onCreateView(
@@ -100,10 +104,14 @@ class LoginFragment : Fragment() {
                 is NetworkResult.Success -> {
                     authViewModel.saveToken(response.data?.token!!)
                     resetForm()
-                    cancelProgressDialog()
-                    val action =
-                        LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-                    findNavController().navigate(action)
+                    mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
+                        if (!value.isNullOrEmpty()) {
+                            cancelProgressDialog()
+                            val action =
+                                LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                            findNavController().navigate(action)
+                        }
+                    }
                 }
             }
 

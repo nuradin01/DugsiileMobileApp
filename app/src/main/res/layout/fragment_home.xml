@@ -49,8 +49,6 @@
 
                 <include layout="@layout/shimmer_layout" />
 
-                <include layout="@layout/shimmer_layout" />
-
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
@@ -59,7 +57,7 @@
             android:id="@+id/recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,31 +68,30 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:alpha="0.5"
-            readApiResponse="@{mainViewModel.studentsResponse}"
+            android:contentDescription="@string/error_icon"
             android:src="@drawable/ic_sad"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/recyclerview"
-            app:layout_constraintVertical_bias="0.37"
-            android:contentDescription="@string/error_icon" />
+            app:layout_constraintVertical_bias="0.37" />
 
         <TextView
             android:id="@+id/error_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            readApiResponse="@{mainViewModel.studentsResponse}"
-            android:ellipsize="end"
-            android:maxLines="2"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:alpha="0.5"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/error_imageView"
             app:layout_constraintStart_toStartOf="@+id/error_imageView"
-            app:layout_constraintTop_toBottomOf="@+id/error_imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/error_imageView"
+            tools:text="@tools:sample/full_names" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

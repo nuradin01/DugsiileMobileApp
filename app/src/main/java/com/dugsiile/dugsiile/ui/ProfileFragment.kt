@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -22,6 +24,7 @@ import com.dugsiile.dugsiile.util.Constants
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -48,7 +51,7 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
             token = value
@@ -73,19 +76,53 @@ class ProfileFragment : Fragment() {
 
             when (response) {
                 is NetworkResult.Error -> {
-                    binding.ivImageError.visibility = View.VISIBLE
-                    binding.tvProfileError.visibility = View.VISIBLE
-                    binding.tvProfileError.text = response.message
+                    Log.d("user response error", response.message.toString())
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    lifecycleScope.launch {
+                        mainViewModel.readUser.observe(viewLifecycleOwner) { database ->
+                            if (!database.isNullOrEmpty()) {
+                                binding.ivImageError.visibility = View.GONE
+                                binding.tvProfileError.visibility = View.GONE
+                                binding.cardView2.visibility = View.VISIBLE
+                                binding.tvSubjects.visibility = View.VISIBLE
+                                binding.tvStudents.visibility = View.VISIBLE
 
-                    binding.progressBar.visibility= View.GONE
-                    binding.cl2.visibility = View.GONE
-                    binding.ivProfilePicture.visibility= View.GONE
-                    binding.tvName.visibility = View.GONE
-                    binding.tvSchool.visibility = View.GONE
-                    binding.cardView2.visibility=View.GONE
-                    binding.tvEmail.visibility = View.GONE
-                    binding.tvGender.visibility = View.GONE
-                    binding.tvSubjects.visibility = View.GONE
+                                binding.tvName.text = database.first().User.name
+                                binding.tvSchool.text = database.first().User.school
+                                binding.tvEmail.text = database.first().User.email
+                                binding.tvGender.text = database.first().User.gender
+                                mAdapter.setData(database.first().User.schoolSubjects)
+                            } else {
+                                binding.ivImageError.visibility = View.VISIBLE
+                                binding.tvProfileError.visibility = View.VISIBLE
+                                binding.cardView2.visibility=View.GONE
+                                binding.tvSubjects.visibility = View.GONE
+                                if (response.message != "Unable to resolve host " +
+                                    "\"dugsiilemobile.herokuapp.com\": No address " +
+                                    "associated with hostname") {
+                                    binding.tvProfileError.text = response.message
+                                } else {
+                                    binding.tvProfileError.text = "Something went wrong."
+                                }
+
+                            }
+                        }
+                    }
+//                    binding.ivImageError.visibility = View.VISIBLE
+//                    binding.tvProfileError.visibility = View.VISIBLE
+//                    if (response.message != "Unable to resolve host " +
+//                        "\"dugsiilemobile.herokuapp.com\": No address " +
+//                        "associated with hostname") {
+//                        binding.tvProfileError.text = response.message
+//                    } else {
+//                        binding.tvProfileError.text = "Something went wrong."
+//                    }
+//                    binding.cardView2.visibility=View.GONE
+//                    binding.tvSubjects.visibility = View.GONE
 
                 }
                 is NetworkResult.Loading -> {
@@ -94,13 +131,7 @@ class ProfileFragment : Fragment() {
                     binding.tvProfileError.visibility = View.GONE
                 }
                 is NetworkResult.Success -> {
-                    binding.cl2.visibility = View.VISIBLE
-                    binding.ivProfilePicture.visibility= View.VISIBLE
-                    binding.tvName.visibility = View.VISIBLE
-                    binding.tvSchool.visibility = View.VISIBLE
                     binding.cardView2.visibility=View.VISIBLE
-                    binding.tvEmail.visibility = View.VISIBLE
-                    binding.tvGender.visibility = View.VISIBLE
                     binding.tvSubjects.visibility = View.VISIBLE
 
                     binding.ivProfilePicture.load(response.data?.data?.photo) {
