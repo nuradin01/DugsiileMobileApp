@@ -1,5 +1,6 @@
 package com.dugsiile.dugsiile.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,10 +9,13 @@ import com.dugsiile.dugsiile.databinding.StudentRowLayoutBinding
 import com.dugsiile.dugsiile.models.Student
 import com.dugsiile.dugsiile.models.StudentData
 import com.dugsiile.dugsiile.util.StudentsDiffUtil
+import java.util.*
 
 class StudentAdapter: RecyclerView.Adapter<StudentAdapter.MyViewHolder>() {
 
     private var students = emptyList<StudentData>()
+    private var copyStudents = emptyList<StudentData>()
+    private var filteredStudents = arrayListOf<StudentData>()
 
     class MyViewHolder(private val binding: StudentRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -45,10 +49,27 @@ class StudentAdapter: RecyclerView.Adapter<StudentAdapter.MyViewHolder>() {
     }
 
     fun setData(newData: Student){
+        filteredStudents.clear()
         val studentsDiffUtil =
             StudentsDiffUtil(students, newData.data)
         val diffUtilResult = DiffUtil.calculateDiff(studentsDiffUtil)
         students = newData.data
+        copyStudents = newData.data
         diffUtilResult.dispatchUpdatesTo(this)
+    }
+
+    fun filterData(keyword: String){
+        filteredStudents.clear()
+            copyStudents.forEach {
+                if (it.name.lowercase().contains(keyword.lowercase())) {
+                    filteredStudents.add(it)
+                }
+                val studentsDiffUtil =
+                    StudentsDiffUtil(students, filteredStudents)
+                val diffUtilResult = DiffUtil.calculateDiff(studentsDiffUtil)
+                students = filteredStudents.toList()
+                diffUtilResult.dispatchUpdatesTo(this)
+            }
+
     }
 }
