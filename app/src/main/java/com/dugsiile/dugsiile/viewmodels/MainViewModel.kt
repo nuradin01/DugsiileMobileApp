@@ -59,6 +59,7 @@ class MainViewModel @Inject constructor(
     var chargeStudentResponse: MutableLiveData<NetworkResult<ChargeSingleStudent>> = MutableLiveData()
     var receivePaymentResponse: MutableLiveData<NetworkResult<ChargeSingleStudent>> = MutableLiveData()
     var getFeesResponse: MutableLiveData<NetworkResult<Fee>> = MutableLiveData()
+    var deleteFeeResponse: MutableLiveData<NetworkResult<DeleteResponse>> = MutableLiveData()
 
     fun getLogedinUser(token: String) = viewModelScope.launch {
         getLogedinUserSafeCall(token)
@@ -76,14 +77,17 @@ class MainViewModel @Inject constructor(
     fun chargeAllPaidStudents(token: String)= viewModelScope.launch{
         chargeAllPaidStudentsSafeCall(token)
     }
-    fun chargeStudent(token: String, id: String)= viewModelScope.launch{
-        chargeStudentSafeCall(token,id)
+    fun chargeStudent(token: String, id: String,amountCharged: AmountFee)= viewModelScope.launch{
+        chargeStudentSafeCall(token,id,amountCharged)
     }
     fun receivePayment(token: String, id: String)= viewModelScope.launch{
         receivePaymentSafeCall(token,id)
     }
     fun getFees(token: String, queries: Map<String,String>)= viewModelScope.launch{
         getFeesSafeCall(token,queries)
+    }
+    fun deleteFee(token: String,_id: String)= viewModelScope.launch{
+        deleteFeeSafeCall(token,_id)
     }
 
     private suspend fun addStudentSafeCall(token: String,studentData: StudentData) {
@@ -176,11 +180,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun chargeStudentSafeCall(token: String, id: String) {
+    private suspend fun chargeStudentSafeCall(token: String, id: String,amountCharged:AmountFee) {
         chargeStudentResponse.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             try {
-                val response = repository.remote.chargeStudent(token,id)
+                val response = repository.remote.chargeStudent(token,id, amountCharged)
                 chargeStudentResponse.value = handleChargeStudent(response)
 
             } catch (e: Exception) {
@@ -221,6 +225,22 @@ class MainViewModel @Inject constructor(
             }
         } else {
             getFeesResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
+    private suspend fun deleteFeeSafeCall(token: String,_id: String) {
+        deleteFeeResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.deleteFee(token,_id)
+                deleteFeeResponse.value = handleDeleteFeeResponse(response)
+
+            } catch (e: Exception) {
+                deleteFeeResponse.value = NetworkResult.Error(e.message)
+                Log.d("Delete Fee error", e.toString())
+            }
+        } else {
+            deleteFeeResponse.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 
@@ -343,6 +363,20 @@ class MainViewModel @Inject constructor(
             }
             else -> {
                 Log.d("get fees error", response.message())
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+    private fun handleDeleteFeeResponse(response: Response<DeleteResponse>): NetworkResult<DeleteResponse> {
+        return when {
+            response.code() == 401 ->{
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                Log.d("Delete Fee error", response.message())
                 NetworkResult.Error(response.message())
             }
         }

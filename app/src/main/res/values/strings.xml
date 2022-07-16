@@ -35,11 +35,14 @@
     <string name="error_icon">error_icon</string>
     <string name="parent_icon">parent icon</string>
     <string name="delete_student">Delete Student</string>
-    <string name="charge_all_paid_students">Charge all paid students</string>
+    <string name="charge_all_paid_students">Charge all paying students</string>
     <string name="charge_single_student">charge single student</string>
     <string name="subjects">Subjects</string>
     <string name="choose_range">choose range</string>
     <string name="search">Search</string>
+    <string name="enter_fee">Enter Fee</string>
+    <string name="receive">Receive</string>
+    <string name="delete_fee">Delete Fee</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

@@ -57,14 +57,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Receive"
+                    android:text="@string/receive"
                     app:icon="@drawable/ic_dollar"
                     app:layout_constraintBottom_toBottomOf="@+id/tvFeeInfo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/tvFeeInfo"
                     app:layout_constraintTop_toTopOf="@+id/tvFeeInfo" />
+
+                <TextView
+                    android:id="@+id/textViewOptions"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="20dp"
+                    android:gravity="center"
+                    android:text="⋮"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnReceive"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnReceive"
+                    app:layout_constraintTop_toTopOf="@+id/btnReceive" />
 
 
 

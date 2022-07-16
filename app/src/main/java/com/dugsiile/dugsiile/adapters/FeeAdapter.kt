@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +18,12 @@ import com.google.android.material.snackbar.Snackbar
 
 class FeeAdapter(
     private val mainViewModel: MainViewModel,
+    private var optionsMenuClickListener: OptionsMenuClickListener
 ) : RecyclerView.Adapter<FeeAdapter.MyViewHolder>() {
+
+    interface OptionsMenuClickListener {
+        fun onOptionsMenuClicked(position: Int)
+    }
 
     private var fees = emptyList<FeeData>()
     private var token: String? = null
@@ -57,7 +61,7 @@ class FeeAdapter(
 
                 .setMessage("Are you sure you want to receive $${currentFee.amountCharged}?")
 
-                .setNegativeButton("No") { dialog, which ->
+                .setNegativeButton("No") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .setPositiveButton("Yes") { _, _ ->
@@ -93,6 +97,11 @@ class FeeAdapter(
                     }
                 }
                 .show()
+        }
+        // implement on clickListener and pass position of the item
+        // rest we will handle in MainActivity.kt
+        holder.binding.textViewOptions.setOnClickListener {
+            optionsMenuClickListener.onOptionsMenuClicked(position)
         }
 
     }

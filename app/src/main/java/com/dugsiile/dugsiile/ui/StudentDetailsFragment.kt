@@ -1,11 +1,15 @@
 package com.dugsiile.dugsiile.ui
 
+import android.app.ProgressDialog.show
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -14,12 +18,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.adapters.FeeAdapter
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
+import com.dugsiile.dugsiile.models.AmountFee
 import com.dugsiile.dugsiile.models.FeeData
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import java.nio.file.Files.delete
 import java.text.SimpleDateFormat
+import java.util.HashMap
+import kotlin.math.roundToInt
 
 
 public class StudentDetailsFragment : Fragment() {
@@ -28,7 +36,11 @@ public class StudentDetailsFragment : Fragment() {
     private var token: String? = null
     private lateinit var feeList: MutableList<FeeData>
 
-    private  val  mAdapter by lazy { FeeAdapter(mainViewModel)}
+    private  val  mAdapter by lazy { FeeAdapter(mainViewModel, object :FeeAdapter.OptionsMenuClickListener{
+        override fun onOptionsMenuClicked(position: Int) {
+            performOptionsMenuClick(position)
+        }
+    })}
 
 
     private var _binding: FragmentStudentDetailsBinding? = null
@@ -121,18 +133,30 @@ public class StudentDetailsFragment : Fragment() {
             }
             R.id.miChargeStudent -> {
                 MaterialAlertDialogBuilder(requireContext())
-                    .setIcon(R.drawable.ic_dollar)
-                    .setTitle("Charge Monthly Fee?")
 
-                    .setMessage("Are you sure you want to charge ${args.student.name}?")
+                    .setIcon(R.drawable.ic_dollar)
+                    .setTitle("Charge Fee")
+                    .setView(R.layout.edit_text)
 
                     .setNegativeButton("No") { dialog, which ->
                         dialog.dismiss()
                     }
-                    .setPositiveButton("Yes") { _, _ ->
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        val input =
+                            (dialog as AlertDialog).findViewById<TextView>(android.R.id.text1)
+                        if (input?.text.isNullOrEmpty() || input?.text.toString() == "0") {
+                            Toast.makeText(context, "Please enter fee", Toast.LENGTH_LONG).show()
+                        }else {
+                           val inputData = input!!.text.toString()
+                            val amountCharged = AmountFee(inputData.toFloat())
 
-                        mainViewModel.chargeStudent("Bearer $token", args.student._id!!)
-                        handleChargeStudentResponse()
+                            mainViewModel.chargeStudent(
+                                "Bearer $token",
+                                args.student._id!!,
+                                amountCharged
+                            )
+                            handleChargeStudentResponse()
+                        }
                     }
                     .show()
             }
@@ -163,8 +187,9 @@ public class StudentDetailsFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     feeList.add(response.data!!.data)
+                    val feeSet = feeList.toSet()
                     setupRecyclerView()
-                    mAdapter.setData(feeList.toList())
+                    mAdapter.setData(feeSet.toList())
                     Snackbar.make(binding.root, "$${response.data.data.amountCharged} was charged", Snackbar.LENGTH_SHORT).show()
                     Log.d("charge single student", response.data.toString())
                 }
@@ -179,6 +204,88 @@ public class StudentDetailsFragment : Fragment() {
 
             }
         }
+    }
+
+    // this method will handle the onclick options click
+    private fun performOptionsMenuClick(position: Int) {
+        // create object of PopupMenu and pass context and view where we want
+        // to show the popup menu
+        val popupMenu = PopupMenu(context , binding.unpaidFeesRecyclerview[position].findViewById(R.id.textViewOptions))
+        // add the menu
+        popupMenu.inflate(R.menu.fee_menu)
+        // implement on menu item click Listener
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.deleteFee -> {
+                    Log.d("deletefee", position.toString())
+
+                    mainViewModel.deleteFee("Bearer $token", feeList[position].id)
+                    mainViewModel.deleteFeeResponse.observe(viewLifecycleOwner) { response ->
+
+                        when (response) {
+                            is NetworkResult.Success -> {
+                                mainViewModel.getFees("Bearer $token", applyQueries())
+                                handleFeeResponse()
+                                Log.d("deletefee", response.message.toString())
+                                Snackbar.make(
+                                    binding.materialCardView,
+                                    "${feeList[position].amountCharged} was deleted",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                            is NetworkResult.Error -> {
+                                Toast.makeText(
+                                   context,
+                                    response.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            false
+        }
+        popupMenu.show()
+    }
+    private fun handleFeeResponse() {
+        mainViewModel.getFeesResponse.observe(viewLifecycleOwner) { response ->
+
+            when (response) {
+                is NetworkResult.Error -> {
+
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is NetworkResult.Success -> {
+                    val fees = mutableListOf<FeeData>()
+                    response.data?.data?.forEach {
+                        fees.add(it)
+                    }
+                    mAdapter.setData(fees.toList())
+                    Log.d("studentFee",response.data?.count.toString())
+
+                }
+            }
+
+        }
+
+    }
+
+
+
+    private fun applyQueries(): HashMap<String, String> {
+        val queries : HashMap<String, String> = HashMap()
+        queries["student"] = args.student._id.toString()
+        queries["balance[gt]"] = "0"
+        return queries
     }
 
     override fun onDestroyView() {

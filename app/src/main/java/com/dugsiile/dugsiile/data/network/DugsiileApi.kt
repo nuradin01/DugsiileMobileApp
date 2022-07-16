@@ -54,11 +54,11 @@ interface DugsiileApi {
     suspend fun chargeAllPaidStudents(
         @Header("authorization") token: String,
     ) : Response<Fee>
-
     @POST("api/v1/fees/{id}")
     suspend fun chargeStudent(
         @Header("authorization") token: String,
-        @Path ("id") id: String
+        @Path ("id") id: String,
+        @Body amountCharged: AmountFee
     ) : Response<ChargeSingleStudent>
     @PUT("api/v1/fees/{id}")
     suspend fun receivePayment(
@@ -71,5 +71,11 @@ interface DugsiileApi {
         @Header("authorization") token: String,
         @QueryMap queries: Map<String,String>
     ) : Response<Fee>
+
+    @DELETE("api/v1/fees/{id}")
+    suspend fun deleteFee(
+        @Header("authorization") token: String,
+        @Path ("id") id: String
+    ) : Response<DeleteResponse>
 
 }
