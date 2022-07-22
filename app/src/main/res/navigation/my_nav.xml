@@ -81,5 +81,17 @@
         <argument
             android:name="student"
             app:argType="com.dugsiile.dugsiile.models.StudentData" />
+        <action
+            android:id="@+id/action_studentDetailsFragment_to_updateStudentFragment"
+            app:destination="@id/updateStudentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateStudentFragment"
+        android:name="com.dugsiile.dugsiile.ui.UpdateStudentFragment"
+        android:label="Update"
+        tools:layout="@layout/fragment_update_student" >
+        <argument
+            android:name="student"
+            app:argType="com.dugsiile.dugsiile.models.StudentData" />
     </fragment>
 </navigation>

@@ -43,6 +43,8 @@
     <string name="enter_fee">Enter Fee</string>
     <string name="receive">Receive</string>
     <string name="delete_fee">Delete Fee</string>
+    <string name="update_student">update_student</string>
+    <string name="update">Update</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

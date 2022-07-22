@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/miUpdateStudent"
+        android:title="@string/update_student"
+        android:icon="@drawable/ic_round_edit"
+        app:showAsAction="ifRoom"/>
     <item android:id="@+id/miDeleteStudent"
         android:title="@string/delete_student"
         android:icon="@drawable/ic_round_delete"

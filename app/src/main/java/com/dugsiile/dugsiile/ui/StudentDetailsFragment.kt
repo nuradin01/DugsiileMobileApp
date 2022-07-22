@@ -131,6 +131,11 @@ public class StudentDetailsFragment : Fragment() {
                     .show()
 
             }
+            R.id.miUpdateStudent -> {
+                val action =
+                StudentDetailsFragmentDirections.actionStudentDetailsFragmentToUpdateStudentFragment(args.student)
+                findNavController().navigate(action)
+            }
             R.id.miChargeStudent -> {
                 MaterialAlertDialogBuilder(requireContext())
 
@@ -178,6 +183,7 @@ public class StudentDetailsFragment : Fragment() {
                         .show()
                     findNavController().popBackStack()
                 }
+                is NetworkResult.Loading -> TODO()
             }
 
         }
@@ -201,7 +207,6 @@ public class StudentDetailsFragment : Fragment() {
                     ).show()
 
                 }
-
             }
         }
     }
@@ -241,7 +246,6 @@ public class StudentDetailsFragment : Fragment() {
                                 ).show()
 
                             }
-
                         }
                     }
                 }

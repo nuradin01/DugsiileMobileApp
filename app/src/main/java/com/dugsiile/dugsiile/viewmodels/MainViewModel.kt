@@ -53,6 +53,7 @@ class MainViewModel @Inject constructor(
     /** RETROFIT */
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     var addStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
+    var updateStudentResponse: MutableLiveData<NetworkResult<StudentData>> = MutableLiveData()
     var studentsResponse: MutableLiveData<NetworkResult<Student>> = MutableLiveData()
     var deleteStudentsResponse: MutableLiveData<NetworkResult<DeleteResponse>> = MutableLiveData()
     var chargeAllResponse: MutableLiveData<NetworkResult<Fee>> = MutableLiveData()
@@ -70,6 +71,9 @@ class MainViewModel @Inject constructor(
 
     fun addStudent(token: String,studentData: StudentData)= viewModelScope.launch{
         addStudentSafeCall(token,studentData)
+    }
+    fun updateStudent(token: String,studentData: StudentData, id: String)= viewModelScope.launch{
+        updateStudentSafeCall(token,studentData, id)
     }
     fun deleteStudent(token: String,_id: String)= viewModelScope.launch{
         deleteStudentSafeCall(token,_id)
@@ -107,6 +111,22 @@ class MainViewModel @Inject constructor(
             }
         } else {
             addStudentResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
+    private suspend fun updateStudentSafeCall(token: String,studentData: StudentData, id: String) {
+        updateStudentResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.updateStudent(token,studentData, id)
+                updateStudentResponse.value = handleUpdateStudent(response)
+
+            } catch (e: Exception) {
+                updateStudentResponse.value = NetworkResult.Error(e.message)
+
+            }
+        } else {
+            updateStudentResponse.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 
@@ -254,6 +274,20 @@ class MainViewModel @Inject constructor(
             }
             else -> {
                 Log.d("SignUp error", response.message())
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
+    private fun handleUpdateStudent(response: Response<StudentData>): NetworkResult<StudentData> {
+        return when {
+            response.code() == 401 ->{
+                NetworkResult.Error("Not Authorized to access this Resource.")
+            }
+            response.isSuccessful -> {
+                NetworkResult.Success(response.body()!!)
+            }
+            else -> {
+                Log.d("update error", response.message())
                 NetworkResult.Error(response.message())
             }
         }
