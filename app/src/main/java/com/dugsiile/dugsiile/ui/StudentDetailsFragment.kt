@@ -183,7 +183,6 @@ public class StudentDetailsFragment : Fragment() {
                         .show()
                     findNavController().popBackStack()
                 }
-                is NetworkResult.Loading -> TODO()
             }
 
         }

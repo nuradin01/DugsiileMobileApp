@@ -282,6 +282,7 @@ class SignupFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        cancelProgressDialog()
         _binding = null
     }
 
