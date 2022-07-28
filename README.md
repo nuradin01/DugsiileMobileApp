@@ -1,7 +1,7 @@
 
 # Dugsiile: school fee management app
 
-Dusiile is a simple fee management app that lets teachers to register students and manage school fees.
+Dugsiile is a simple fee management app that lets teachers to register students and manage school fees.
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.dugsiile"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge-border.png" height="75px"/></a>
 </p>
@@ -16,4 +16,4 @@ Dusiile is a simple fee management app that lets teachers to register students a
 * Select specific time range and see paid and unpaid fees.
 * Charge tuition fee to all paying students.
 * Receive fees.
-* Dugsiile caches your date to see it when you go offline.
+* Dugsiile caches your data to see it when you go offline.
