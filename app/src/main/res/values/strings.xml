@@ -49,4 +49,9 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
+    <!--s=container transform transition-->
+    <string name="student_recipient_to">To %1$s</string>
+    <string name="student_card_transition_name">student_card_%1$s</string>
+    <string name="student_card_detail_transition_name">student_card_detail</string>
 </resources>

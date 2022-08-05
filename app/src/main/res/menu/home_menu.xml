@@ -18,7 +18,7 @@
     <item android:id="@+id/miChargeAll"
         android:title="@string/charge_all_paid_students"
         android:icon="@drawable/ic_dollar"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/miSignout"
         android:title="@string/sign_out"

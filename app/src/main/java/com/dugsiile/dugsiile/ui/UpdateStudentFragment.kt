@@ -28,6 +28,7 @@ import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialSharedAxis
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType
@@ -81,6 +82,12 @@ class UpdateStudentFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+            duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+        }
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+        }
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
 

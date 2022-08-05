@@ -10,9 +10,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".StudentDetailsFragment"
+        android:transitionName="@string/student_card_detail_transition_name"
         android:background="@color/background_color">
 
         <com.google.android.material.card.MaterialCardView

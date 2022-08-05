@@ -1,5 +1,6 @@
 package com.dugsiile.dugsiile.bindingAdapters
 
+import android.content.res.Resources
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.models.FeeData
@@ -16,6 +18,7 @@ import com.dugsiile.dugsiile.models.StudentData
 import com.dugsiile.dugsiile.ui.HomeFragmentDirections
 import com.dugsiile.dugsiile.util.Constants.Companion.BASE_URL
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.transition.MaterialElevationScale
 import java.lang.Exception
 import java.text.SimpleDateFormat
 
@@ -28,9 +31,11 @@ class StudentsRowBinding {
             Log.d("onStudentClickListener", "CALLED")
             studentRowLayout.setOnClickListener {
                 try {
+                    val studentCardDetailTransitionName = studentRowLayout.context.getString(R.string.student_card_detail_transition_name)
+                    val extras = FragmentNavigatorExtras(studentRowLayout to studentCardDetailTransitionName)
                     val action =
                         HomeFragmentDirections.actionHomeFragmentToStudentDetailsFragment(student)
-                    studentRowLayout.findNavController().navigate(action)
+                    studentRowLayout.findNavController().navigate(action, extras)
                 } catch (e: Exception) {
                     Log.d("onStudentClickListener", e.toString())
                 }

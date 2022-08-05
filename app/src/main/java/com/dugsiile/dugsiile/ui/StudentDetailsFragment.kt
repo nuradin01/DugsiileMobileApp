@@ -1,13 +1,16 @@
 package com.dugsiile.dugsiile.ui
 
-import android.app.ProgressDialog.show
+
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.Gravity.apply
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat.apply
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,22 +18,25 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionManager
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.adapters.FeeAdapter
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
 import com.dugsiile.dugsiile.models.AmountFee
 import com.dugsiile.dugsiile.models.FeeData
 import com.dugsiile.dugsiile.util.NetworkResult
+import com.dugsiile.dugsiile.util.themeColor
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import java.nio.file.Files.delete
+import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialFade
+import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
 import java.util.HashMap
-import kotlin.math.roundToInt
 
 
-public class StudentDetailsFragment : Fragment() {
+class StudentDetailsFragment : Fragment() {
     private val args by navArgs<StudentDetailsFragmentArgs>()
     private lateinit var mainViewModel: MainViewModel
     private var token: String? = null
@@ -49,6 +55,13 @@ public class StudentDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.navHostFragment
+            duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().themeColor(com.google.android.material.R.attr.colorSurface))
+        }
     }
 
     override fun onCreateView(
@@ -70,9 +83,10 @@ public class StudentDetailsFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
+
         // format joined date
-       val JoindedAt = SimpleDateFormat("d/M/yyyy").format(args.student.joinedAt!!)
-        binding.tvJoinedDateDetails.text = JoindedAt.toString()
+       val joinedAt = SimpleDateFormat("d/M/yyyy").format(args.student.joinedAt!!)
+        binding.tvJoinedDateDetails.text = joinedAt.toString()
 
         if(args.student.isScholarship == true) {
             binding.tvFeeDetails.text = "Scholarship"
@@ -134,6 +148,14 @@ public class StudentDetailsFragment : Fragment() {
             R.id.miUpdateStudent -> {
                 val action =
                 StudentDetailsFragmentDirections.actionStudentDetailsFragmentToUpdateStudentFragment(args.student)
+                this.apply {
+                    exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                        duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+                    }
+                    reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+                        duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+                    }
+                }
                 findNavController().navigate(action)
             }
             R.id.miChargeStudent -> {
