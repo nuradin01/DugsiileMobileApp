@@ -55,22 +55,42 @@ class StudentsRowBinding {
         @BindingAdapter("showTickIcon")
         @JvmStatic
 
-        fun showTickIcon(imageView: ImageView, fees: List<FeeData>) {
+        fun showTickIcon(view: View, fees: List<FeeData>) {
             if (fees.isEmpty()) {
-                imageView.visibility = View.VISIBLE
+              when(view) {
+                  is ImageView -> view.visibility = View.VISIBLE
+                  is TextView -> view.visibility = View.GONE
+              }
 
             } else {
-                imageView.visibility = View.GONE
+                when(view) {
+                    is ImageView -> view.visibility = View.GONE
+                    is TextView -> {
+                        view.visibility = View.VISIBLE
+                        view.text = "$${fees.map { it.amountCharged }.reduce { acc, fee -> acc+fee }}"
+                    }
+                }
             }
         }
 
 
-    @BindingAdapter("feeName")
-    @JvmStatic
-    fun feeName(textView: TextView, fee: FeeData) {
-        val chargedAtFormated = SimpleDateFormat("MMMM, yyyy").format(fee.chargedAt)
-        textView.text = "$${fee.amountCharged} of $chargedAtFormated"
-    }
+        @BindingAdapter("feeName")
+        @JvmStatic
+        fun feeName(textView: TextView, fee: FeeData) {
+            val chargedAtFormated = SimpleDateFormat("MMMM, yyyy").format(fee.chargedAt)
+            textView.text = "$${fee.amountCharged} of $chargedAtFormated"
+        }
+
+        @BindingAdapter("studentName")
+        @JvmStatic
+        fun studentName(textView: TextView, name: String) {
+            if (name.length >30){
+            textView.text = "${name.substring(0,30)} ..."
+            } else {
+            textView.text = name
+
+            }
+        }
 
 
 }}

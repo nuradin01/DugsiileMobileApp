@@ -62,13 +62,14 @@ class RegisterStudentFragment : Fragment() {
             return uCrop.getIntent(context)
         }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-            return UCrop.getOutput(intent!!)!!
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent?.let { UCrop.getOutput(it) }
         }
     }
 
     private val getImageFromGallery =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri == null) return@registerForActivityResult
             val outputUri = File(context?.filesDir, "croppedImage.jpg").toUri()
             val listUri = listOf<Uri>(uri, outputUri)
             cropImage.launch(listUri)
