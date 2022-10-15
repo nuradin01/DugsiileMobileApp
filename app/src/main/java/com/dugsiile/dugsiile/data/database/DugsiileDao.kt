@@ -20,4 +20,10 @@ interface DugsiileDao {
 
     @Query("SELECT * FROM user_table ORDER BY id ASC")
     fun readUser(): Flow<List<UserEntity>>
+
+    @Query("DELETE FROM students_table")
+    fun clearStudents()
+
+    @Query("DELETE FROM user_table")
+    fun clearUser()
 }

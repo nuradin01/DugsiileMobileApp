@@ -121,6 +121,8 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
                     ).show()
                 }
                 is NetworkResult.Loading -> {
+                    binding.errorImageView.visibility = View.GONE
+                    binding.errorTextView.visibility = View.GONE
                     binding.recyclerview.visibility = View.VISIBLE
 //                    showShimmerEffect()
                 }
@@ -140,6 +142,8 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
         when (item.itemId) {
             R.id.miSignout -> {
                 mainViewModel.signout()
+                mainViewModel.clearStudents()
+                mainViewModel.clearUser()
             }
             R.id.miAddStudent -> {
                 val action =

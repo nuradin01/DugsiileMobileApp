@@ -23,4 +23,12 @@ class LocalDataSource @Inject constructor(
     suspend fun insertUser(userEntity: UserEntity) {
         dugsiileDao.insertUser(userEntity)
     }
+
+    fun clearStudents() {
+        dugsiileDao.clearStudents()
+    }
+
+    fun clearUser() {
+        dugsiileDao.clearUser()
+    }
 }

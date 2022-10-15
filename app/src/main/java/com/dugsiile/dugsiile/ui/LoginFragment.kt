@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.models.EmailAndPassword
+import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
@@ -27,7 +29,7 @@ import java.util.*
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private var dialog : Dialog? = null
+    private var dialog: Dialog? = null
 
     private lateinit var authViewModel: AuthViewModel
     private lateinit var mainViewModel: MainViewModel
@@ -38,6 +40,7 @@ class LoginFragment : Fragment() {
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +55,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        binding.btnSignin.setOnClickListener{
+        binding.btnSignin.setOnClickListener {
             validateInputs()
         }
         binding.tvSignup.setOnClickListener {
@@ -92,9 +95,9 @@ class LoginFragment : Fragment() {
     private fun handleLoginResponse() {
         authViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
 
-            when(response){
+            when (response) {
                 is NetworkResult.Error -> {
-                   cancelProgressDialog()
+                    cancelProgressDialog()
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
 
                 }
@@ -104,14 +107,11 @@ class LoginFragment : Fragment() {
                 is NetworkResult.Success -> {
                     authViewModel.saveToken(response.data?.token!!)
                     resetForm()
-                    mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
-                        if (!value.isNullOrEmpty()) {
-                            cancelProgressDialog()
-                            val action =
-                                LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-                            findNavController().navigate(action)
-                        }
-                    }
+                    val action =
+                        LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                    findNavController().navigate(action)
+
+
                 }
             }
 
@@ -119,7 +119,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun resetForm() {
-       binding.etPassword.text= null
+        binding.etPassword.text = null
         binding.etEmail.text = null
     }
 

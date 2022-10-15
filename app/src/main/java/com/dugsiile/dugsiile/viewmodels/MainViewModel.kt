@@ -49,6 +49,16 @@ class MainViewModel @Inject constructor(
             repository.local.insertUser(userEntity)
         }
 
+    fun clearStudents() =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.clearStudents()
+        }
+
+    fun clearUser() =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.clearUser()
+        }
+
 
     /** RETROFIT */
     var logedinUser: MutableLiveData<NetworkResult<User>> = MutableLiveData()
