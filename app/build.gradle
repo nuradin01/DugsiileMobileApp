@@ -9,17 +9,17 @@ plugins {
 
 android {
 
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.dugsiile"
         minSdk 23
-        targetSdk 31
+        targetSdk 33
         versionCode 3
         versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        signingConfig signingConfigs.release
     }
 
     buildTypes {

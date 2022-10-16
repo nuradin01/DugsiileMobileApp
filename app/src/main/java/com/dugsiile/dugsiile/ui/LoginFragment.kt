@@ -3,27 +3,29 @@ package com.dugsiile.dugsiile.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentLoginBinding
 import com.dugsiile.dugsiile.models.EmailAndPassword
-import com.dugsiile.dugsiile.models.Token
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -57,6 +59,16 @@ class LoginFragment : Fragment() {
 
         binding.btnSignin.setOnClickListener {
             validateInputs()
+        }
+        binding.etPassword.setOnEditorActionListener { _, actionId, event ->
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE
+                || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT) {
+                validateInputs()
+                true
+            } else{
+
+            false
+            }
         }
         binding.tvSignup.setOnClickListener {
             val action =
