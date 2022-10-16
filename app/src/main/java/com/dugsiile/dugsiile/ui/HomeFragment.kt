@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.adapters.StudentAdapter
 import com.dugsiile.dugsiile.databinding.FragmentHomeBinding
+import com.dugsiile.dugsiile.models.Student
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -144,6 +145,8 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
                 mainViewModel.signout()
                 mainViewModel.clearStudents()
                 mainViewModel.clearUser()
+                val emptyResponse = Student(0, emptyList(),true)
+                mainViewModel.studentsResponse.value = NetworkResult.Success(emptyResponse)
             }
             R.id.miAddStudent -> {
                 val action =
