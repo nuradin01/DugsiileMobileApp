@@ -1,0 +1,65 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Increment the build number and Compile a release build"
+  lane :upload_internal do
+    gradle(task: "clean") # run the task clean
+    increment_version_code(version_code: ENV["BUILD_NUMBER_ANDROID"].to_i) # Increment the build number of the application
+    gradle(task: "bundleRelease") # compile a release bundle application app.aab
+    # gradle(task: "clean assembleRelease")
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :playstore do
+    gradle(task: "clean bundleRelease")
+#     gradle(task: "bundleProductionRelease")
+#     gradle(task: "assembleProductionRelease") # apk
+    app_path = "app/build.gradle"
+    version_name = android_get_version_name(gradle_file: app_path)
+    build_number = android_get_version_code(gradle_file: app_path)
+    upload_to_play_store(
+#           release_status: 'draft',
+#           track: 'beta',
+          track: 'production',
+          skip_upload_metadata: true,
+          skip_upload_screenshots: true,
+          skip_upload_images: true,
+          skip_upload_changelogs: false,
+          skip_upload_apk: true,
+#           skip_upload_aab: true,
+          in_app_update_priority: 5,
+          rollout: '1',
+          version_name: build_number + " (" + version_name + ")", # 1 (0.0.1)
+    )
+  end
+
+  desc "Build Debug APK"
+  lane :build do
+    gradle(task: "clean assembleDebug")
+  end
+
+  desc "Build Release APK"
+  lane :release do
+    gradle(task: "clean assembleRelease")
+  end
+
+  desc "Build Release AAB bundle"
+  lane :bundle do
+    gradle(task: "bundleRelease")
+  end
+end

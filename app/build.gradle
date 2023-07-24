@@ -7,18 +7,32 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
     compileSdk 33
 
     defaultConfig {
         applicationId "com.dugsiile"
         minSdk 23
         targetSdk 33
-        versionCode 4
-        versionName "2.0.0"
-
+        versionCode 5
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -26,6 +40,13 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
         }
     }
     buildFeatures {
