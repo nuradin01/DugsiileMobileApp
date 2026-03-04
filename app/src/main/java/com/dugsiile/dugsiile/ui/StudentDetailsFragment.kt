@@ -1,16 +1,18 @@
 package com.dugsiile.dugsiile.ui
 
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.view.Gravity.apply
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.GravityCompat.apply
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,22 +20,18 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionManager
+import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.adapters.FeeAdapter
 import com.dugsiile.dugsiile.databinding.FragmentStudentDetailsBinding
 import com.dugsiile.dugsiile.models.AmountFee
 import com.dugsiile.dugsiile.models.FeeData
 import com.dugsiile.dugsiile.util.NetworkResult
-import com.dugsiile.dugsiile.util.themeColor
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialFade
 import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
-import java.util.HashMap
 
 
 class StudentDetailsFragment : Fragment() {
@@ -56,12 +54,12 @@ class StudentDetailsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.navHostFragment
-            duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
-            scrimColor = Color.TRANSPARENT
-            setAllContainerColors(requireContext().themeColor(com.google.android.material.R.attr.colorSurface))
-        }
+//        sharedElementEnterTransition = MaterialContainerTransform().apply {
+//            drawingViewId = R.id.navHostFragment
+//            duration = resources.getInteger(R.integer.dugsiile_motion_duration_large).toLong()
+//            scrimColor = Color.TRANSPARENT
+//            setAllContainerColors(requireContext().themeColor(com.google.android.material.R.attr.colorSurface))
+//        }
     }
 
     override fun onCreateView(
@@ -72,6 +70,16 @@ class StudentDetailsFragment : Fragment() {
         _binding = FragmentStudentDetailsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.student = args.student
+
+        args.student.photo?.let { url ->
+            binding.ivDetailsPicture.load(url) {
+                crossfade(true)
+                placeholder(R.drawable.ic_person_round)
+                error(R.drawable.ic_person_round)
+                // This prevents the hardware bitmap crash during transitions
+                allowHardware(false)
+            }
+        }
 
         mainViewModel.readToken.asLiveData().observe(viewLifecycleOwner) { value ->
             token = value
@@ -205,6 +213,8 @@ class StudentDetailsFragment : Fragment() {
                         .show()
                     findNavController().popBackStack()
                 }
+
+                else -> {}
             }
 
         }
@@ -228,6 +238,7 @@ class StudentDetailsFragment : Fragment() {
                     ).show()
 
                 }
+                else -> {}
             }
         }
     }
@@ -267,6 +278,7 @@ class StudentDetailsFragment : Fragment() {
                                 ).show()
 
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -298,6 +310,7 @@ class StudentDetailsFragment : Fragment() {
                     Log.d("studentFee",response.data?.count.toString())
 
                 }
+                else -> {}
             }
 
         }

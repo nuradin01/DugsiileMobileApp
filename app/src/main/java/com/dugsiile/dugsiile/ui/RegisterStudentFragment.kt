@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
@@ -24,7 +24,6 @@ import coil.load
 import com.dugsiile.dugsiile.R
 import com.dugsiile.dugsiile.databinding.FragmentStudentRegisterBinding
 import com.dugsiile.dugsiile.models.StudentData
-import com.dugsiile.dugsiile.util.Constants
 import com.dugsiile.dugsiile.util.NetworkResult
 import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
@@ -32,10 +31,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType
+import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.File
 
 @AndroidEntryPoint
 class RegisterStudentFragment : Fragment() {
@@ -51,19 +50,24 @@ class RegisterStudentFragment : Fragment() {
     private var dialog: Dialog? = null
 
 
-    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>() {
+    // Add the second type parameter: Uri?
+    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri?>() {
+
         override fun createIntent(context: Context, input: List<Uri>): Intent {
             val inputUri = input[0]
             val outputUri = input[1]
 
-            val uCrop = UCrop.of(inputUri, outputUri)
+            return UCrop.of(inputUri, outputUri)
                 .withAspectRatio(5f, 5f)
-
-            return uCrop.getIntent(context)
+                .getIntent(context)
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return intent?.let { UCrop.getOutput(it) }
+            return if (resultCode == android.app.Activity.RESULT_OK && intent != null) {
+                UCrop.getOutput(intent)
+            } else {
+                null
+            }
         }
     }
 
@@ -134,7 +138,7 @@ class RegisterStudentFragment : Fragment() {
     private fun uploadImage(uri: Uri) {
 
         val file = File(uri.path!!)
-        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
         val image = MultipartBody.Part.createFormData("image", file.name, requestBody)
 
         authViewModel.uploadImage(image)

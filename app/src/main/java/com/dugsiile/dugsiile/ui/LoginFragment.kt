@@ -25,6 +25,7 @@ import com.dugsiile.dugsiile.viewmodels.AuthViewModel
 import com.dugsiile.dugsiile.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlinx.coroutines.delay
 
 
 @AndroidEntryPoint
@@ -117,11 +118,11 @@ class LoginFragment : Fragment() {
                     showProgressDialog()
                 }
                 is NetworkResult.Success -> {
+                    cancelProgressDialog()
                     authViewModel.saveToken(response.data?.token!!)
                     resetForm()
-                    val action =
-                        LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-                    findNavController().navigate(action)
+
+                    findNavController().navigate(R.id.homeFragment)
 
 
                 }

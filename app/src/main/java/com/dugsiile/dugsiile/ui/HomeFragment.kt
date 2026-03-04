@@ -197,6 +197,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
                     ).show()
                 }
 
+                else -> {}
             }
         }
     }

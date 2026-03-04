@@ -35,6 +35,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 @AndroidEntryPoint
 class UpdateStudentFragment : Fragment() {
@@ -50,19 +51,24 @@ class UpdateStudentFragment : Fragment() {
     private var photo: String = "no-photo.jpg"
 
 
-    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri>() {
+    // Add the second type parameter: Uri?
+    private val uCropContract = object : ActivityResultContract<List<Uri>, Uri?>() {
+
         override fun createIntent(context: Context, input: List<Uri>): Intent {
             val inputUri = input[0]
             val outputUri = input[1]
 
-            val uCrop = UCrop.of(inputUri, outputUri)
+            return UCrop.of(inputUri, outputUri)
                 .withAspectRatio(5f, 5f)
-
-            return uCrop.getIntent(context)
+                .getIntent(context)
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return intent?.let { UCrop.getOutput(it)}
+            return if (resultCode == android.app.Activity.RESULT_OK && intent != null) {
+                UCrop.getOutput(intent)
+            } else {
+                null
+            }
         }
     }
 
@@ -130,7 +136,7 @@ class UpdateStudentFragment : Fragment() {
     private fun uploadImage(uri: Uri) {
 
         val file = File(uri.path!!)
-        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
         val image = MultipartBody.Part.createFormData("image", file.name, requestBody)
 
         authViewModel.uploadImage(image)
@@ -225,6 +231,7 @@ class UpdateStudentFragment : Fragment() {
                         .show()
                     findNavController().popBackStack(R.id.homeFragment, false)
                 }
+                else -> {}
 
             }
 
